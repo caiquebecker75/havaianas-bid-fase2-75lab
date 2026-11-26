@@ -55,6 +55,7 @@
     $$('#sumLista button').forEach(b=>b.classList.toggle('atual',+b.dataset.i===n));
     history.replaceState(null,'','#'+(n+1));
     const fn=aoEntrar[t.classList[1]];if(fn)fn(t);
+    ligas(t);
     iniciarAutos(t);
   }
   function ir(n){
@@ -405,6 +406,55 @@
     vistas.forEach(v=>v.classList.add('pan'));
     roteiro('s-qr',{itens:()=>abas,ms:()=>8000});
   })();
+
+
+  /* ---------------------------------------------------------- ligações: linhas que se desenham entre elementos
+     <section data-ligas="a>b b~c a-b"> liga os elementos marcados com data-no="a" (só letras e números).
+     >  curva com um ponto correndo    ~  curva tracejada    -  reta com um ponto correndo
+     a:r>b:l escolhe o lado (t, r, b, l, c). data-circ no elemento: a linha sai da borda do círculo. */
+  function caixaNo(el,m){let x=0,y=0,e=el;while(e&&e!==m){x+=e.offsetLeft;y+=e.offsetTop;e=e.offsetParent;}return{x,y,w:el.offsetWidth,h:el.offsetHeight};}
+  function pontoNo(b,lado,alvo,circ){
+    const cx=b.x+b.w/2,cy=b.y+b.h/2;
+    if(lado==='c')return[cx,cy];if(lado==='t')return[cx,b.y];if(lado==='b')return[cx,b.y+b.h];if(lado==='l')return[b.x,cy];if(lado==='r')return[b.x+b.w,cy];
+    const dx=alvo[0]-cx,dy=alvo[1]-cy,d=Math.hypot(dx,dy)||1;
+    if(circ){const r=Math.min(b.w,b.h)/2;return[cx+dx/d*r,cy+dy/d*r];}
+    const sx=dx?(b.w/2)/Math.abs(dx):Infinity,sy=dy?(b.h/2)/Math.abs(dy):Infinity,s=Math.min(sx,sy);
+    return[cx+dx*s,cy+dy*s];
+  }
+  function ligas(t){
+    const def=t.dataset.ligas;if(!def)return;
+    const m=t.querySelector('.miolo');m.querySelectorAll(':scope>.ligas,:scope>.fluxo').forEach(e=>e.remove());
+    const svg=document.createElementNS(SVGNS,'svg');svg.setAttribute('class','ligas');svg.setAttribute('viewBox','0 0 1600 900');m.prepend(svg);
+    def.trim().split(/\s+/).forEach((par,k)=>{
+      const mm=par.match(/^(\w+)(?::([trblc]))?([>~-])(\w+)(?::([trblc]))?$/);if(!mm)return;
+      const A=m.querySelector('[data-no="'+mm[1]+'"]'),B=m.querySelector('[data-no="'+mm[4]+'"]');if(!A||!B)return;
+      const ba=caixaNo(A,m),bb=caixaNo(B,m),ca=[ba.x+ba.w/2,ba.y+ba.h/2],cb=[bb.x+bb.w/2,bb.y+bb.h/2];
+      const p1=pontoNo(ba,mm[2],cb,A.hasAttribute('data-circ')),p2=pontoNo(bb,mm[5],ca,B.hasAttribute('data-circ'));
+      const tipo=mm[3],dx=p2[0]-p1[0],dy=p2[1]-p1[1],f=v=>Math.round(v*10)/10;
+      let d;
+      if(tipo==='-')d=`M${f(p1[0])} ${f(p1[1])}L${f(p2[0])} ${f(p2[1])}`;
+      else if(Math.abs(dx)>=Math.abs(dy))d=`M${f(p1[0])} ${f(p1[1])}C${f(p1[0]+dx*.5)} ${f(p1[1])} ${f(p2[0]-dx*.5)} ${f(p2[1])} ${f(p2[0])} ${f(p2[1])}`;
+      else d=`M${f(p1[0])} ${f(p1[1])}C${f(p1[0])} ${f(p1[1]+dy*.5)} ${f(p2[0])} ${f(p2[1]-dy*.5)} ${f(p2[0])} ${f(p2[1])}`;
+      const p=document.createElementNS(SVGNS,'path');p.setAttribute('d',d);p.setAttribute('class','liga'+(tipo==='~'?' tr':''));
+      p.dataset.a=mm[1];p.dataset.b=mm[4];svg.appendChild(p);
+      const atraso=350+k*110,L=p.getTotalLength();
+      if(!reduz){
+        if(tipo==='~')p.animate([{opacity:0},{opacity:.5}],{duration:700,delay:atraso,fill:'backwards'});
+        else p.animate([{strokeDasharray:L+' '+L,strokeDashoffset:L},{strokeDasharray:L+' '+L,strokeDashoffset:0}],{duration:900,delay:atraso,easing:'cubic-bezier(.5,0,.2,1)',fill:'backwards'});
+      }
+      if(tipo!=='~'){
+        const ponto=document.createElement('i');ponto.className='fluxo';ponto.style.offsetPath=`path('${d}')`;
+        ponto.style.animationDuration=Math.max(2.4,L/110).toFixed(2)+'s';ponto.style.animationDelay=((atraso+900)/1000+k*.37%1.2).toFixed(2)+'s';
+        svg.after(ponto);
+      }
+    });
+    m.querySelectorAll('[data-no]').forEach(n=>{
+      const linhas=()=>svg.querySelectorAll(`[data-a="${n.dataset.no}"],[data-b="${n.dataset.no}"]`);
+      n.onmouseenter=()=>linhas().forEach(p=>p.classList.add('acende'));
+      n.onmouseleave=()=>linhas().forEach(p=>p.classList.remove('acende'));
+    });
+  }
+  document.fonts&&document.fonts.ready.then(()=>ligas(telas[atual]));
 
   /* ---------------------------------------------------------- temporizador
      Os botões de cada tela abrem sozinhos, um de cada vez, com tempo para ler.
