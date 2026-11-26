@@ -10,7 +10,7 @@
   let atual=0, escalaAtual=1, emTransicao=false, pendente=null;
   const total=telas.length, dd=n=>String(n).padStart(2,'0');
   const autos={};let autoAtivos=[];
-  const TEMAS={claro:'claro',claro2:'claro',escuro:'escuro',lime:'lime',foto:'foto',aura:'aura'};
+  const TEMAS={claro:'claro',claro2:'claro',escuro:'escuro',lime:'lime',foto:'foto',aura:'aura',planta:'escuro'};
 
   /* ---------------------------------------------------------- trilha das capas de capítulo (gerada a partir dos data-cap) */
   (function(){
@@ -265,6 +265,21 @@
     });
   })();
 
+
+  /* ---------------------------------------------------------- galeria em cinema */
+  (function(){
+    const t=$('.s-cine');if(!t)return;
+    const bs=$$('#cineTira button'),hs=$$('.cine .h',t),leg=$('#cineLeg');
+    function mostra(k){
+      bs.forEach((b,j)=>b.classList.toggle('on',j===k));
+      hs.forEach((h,j)=>{h.classList.toggle('on',j===k);if(j===k)h.loading='eager';});
+      leg.textContent=bs[k].dataset.leg;
+    }
+    bs.forEach((b,k)=>b.addEventListener('click',e=>{e.stopPropagation();mostra(k);}));
+    aoEntrar['s-cine']=()=>mostra(0);
+    roteiro('s-cine',{itens:()=>bs,ms:()=>5200});
+  })();
+
   /* ---------------------------------------------------------- cronograma por canal (Gantt) */
   (function(){
     const box=$('#cronoGantt');if(!box||!window.CRONO)return;
@@ -371,7 +386,7 @@
      O primeiro clique da pessoa dentro da tela para o temporizador até ela sair e voltar. */
   function roteiro(cls,cfg){(autos[cls]=autos[cls]||[]).push(cfg);}
   // PDF: tela com botões vira uma página por botão (fonte/gerar-pdf.mjs chama estas duas)
-  const SO_UMA_PAGINA=['s-planta','s-papeis'];
+  const SO_UMA_PAGINA=['s-planta','s-papeis','s-cine'];
   const cfgPdf=()=>{const t=$('.tela.ativa');return SO_UMA_PAGINA.includes(t.classList[1])?null:[t,(autos[t.classList[1]]||[])[0]];};
   window.__pdfEstados=()=>{const r=cfgPdf();if(!r||!r[1])return 0;const n=r[1].itens(r[0]).length;return n>1?n:0;};
   window.__pdfEstado=k=>{const [t,c]=cfgPdf();c.itens(t)[k].click();};
