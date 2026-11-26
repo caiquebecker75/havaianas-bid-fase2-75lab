@@ -1726,3 +1726,7 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 .s-virx .cv:hover{scale:1.08;box-shadow:0 10px 30px rgba(0,0,0,.45)}
 .s-virx .par-v b{position:absolute;left:118px;right:118px;top:12px;text-align:center;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;line-height:1.35;text-transform:uppercase;opacity:.85}
 .s-virx .abrir-sj{position:absolute;left:1120px;top:762px}
+
+/* plantas novas: a entrada fica do lado esquerdo */
+.s-planta .planta .entrada.esq{left:0;transform:none}
+.s-planta .planta .entrada.esq::before{content:'←'}
