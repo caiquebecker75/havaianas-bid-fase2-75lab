@@ -214,6 +214,57 @@
     roteiro('s-planta',{itens:t=>$$('.lista-pl button',t),texto:(k,t)=>$$('.lista-pl li',t)[k].textContent,extra:800});
   })();
 
+
+  /* ---------------------------------------------------------- o time: fichas, papéis e frentes */
+  (function(){
+    const P=window.PAPEIS||[],F=window.FRENTES||[];
+    const NOMEF=['Lojas Próprias','Franquias','Varejo'];
+    const pizza=d=>{const a=d[0]*3.6,b=(d[0]+d[1])*3.6;return 'conic-gradient(var(--vinho) 0deg '+a+'deg,var(--cobre) '+a+'deg '+b+'deg,var(--azul) '+b+'deg 360deg)';};
+    const fichas=$('#fichas');
+    if(fichas)P.forEach((p,k)=>{
+      const f=document.createElement('div');f.className='fi';f.style.transitionDelay=(.3+k*.05)+'s';
+      f.innerHTML='<i></i><span></span>';$('i',f).style.background=pizza(p[2]);$('span',f).textContent=p[0];fichas.appendChild(f);
+    });
+    const lista=$('#listaPapeis'),box=$('#papelBox'),todos=$('#todosPapeis');
+    if(lista&&P.length){
+      const divisao=d=>d.map((v,j)=>v?'<span class="f'+j+'" style="flex:'+v+'"><b>'+v+'%</b> '+NOMEF[j]+'</span>':'').join('');
+      const maiuscula=t=>t.charAt(0).toUpperCase()+t.slice(1)+'.';
+      P.forEach((p,k)=>{
+        const li=document.createElement('li');li.innerHTML='<button data-cursor="Ver"><i></i><span></span></button>';
+        $('i',li).style.background=pizza(p[2]);$('span',li).textContent=p[0];lista.appendChild(li);
+        li.querySelector('button').addEventListener('click',e=>{e.stopPropagation();mostra(k);});
+      });
+      box.innerHTML='<span class="sen"></span><h3></h3><div class="div-p"></div><p class="mi"></p><div class="col-p"><div><span class="eyebrow">O que entrega</span><ul></ul></div><div><span class="eyebrow">Decide</span><p class="dec"></p><span class="eyebrow">Depende</span><p class="dep"></p><span class="eyebrow">Como a gente mede</span><p class="med"></p></div></div>';
+      function mostra(k){
+        const p=P[k];$$('li',lista).forEach((l,j)=>l.classList.toggle('on',j===k));
+        $('.sen',box).textContent=p[1]+' · 176 horas por mês, só nesta conta';$('h3',box).textContent=p[0];$('.div-p',box).innerHTML=divisao(p[2]);
+        $('.mi',box).textContent=p[3];
+        const ul=$('ul',box);ul.innerHTML='';p[4].forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li);});
+        $('.dec',box).textContent=maiuscula(p[5]);$('.dep',box).textContent=maiuscula(p[6]);$('.med',box).textContent=maiuscula(p[7]);
+        box.classList.remove('troca');void box.offsetWidth;box.classList.add('troca');
+      }
+      P.forEach(p=>{
+        const d=document.createElement('div');d.innerHTML='<b></b><span></span><p></p>';
+        $('b',d).textContent=p[0];$('span',d).textContent=p[2].map((v,j)=>v?NOMEF[j]+' '+v+'%':'').filter(Boolean).join(' · ');$('p',d).textContent=p[3];todos.appendChild(d);
+      });
+      mostra(0);aoEntrar['s-papeis']=()=>mostra(0);
+      roteiro('s-papeis',{itens:()=>$$('button',lista),texto:k=>P[k][3]+' '+P[k][4].join(' '),extra:-1500});
+    }
+    const tres=$('#tresFrentes');
+    if(tres)F.forEach((f,k)=>{
+      const c=document.createElement('div');c.className='fr f'+k+' anima d'+(k+1);
+      c.innerHTML='<div class="cab-f"><span class="eyebrow"></span><b></b><div class="nf"><span><em></em>posições</span><span><em></em>pessoas em tempo integral</span><span><em></em>horas por mês</span></div></div><p class="por"></p><ul></ul>';
+      $('.eyebrow',c).textContent=f.canal;$('b',c).textContent=f.nome;
+      const em=$$('em',c);em[0].textContent=f.pos;em[1].textContent=f.fte;em[2].textContent=f.h.toLocaleString('pt-BR');
+      $('.por',c).textContent=f.por;
+      f.l.forEach(([n,pc,h])=>{
+        const li=document.createElement('li');li.innerHTML='<span class="n"></span><span class="b"><i></i></span><span class="v"></span>';
+        $('.n',li).textContent=n;$('.b i',li).style.width=pc+'%';$('.v',li).textContent=pc+'% · '+h+' h';$('ul',c).appendChild(li);
+      });
+      tres.appendChild(c);
+    });
+  })();
+
   /* ---------------------------------------------------------- cronograma por canal (Gantt) */
   (function(){
     const box=$('#cronoGantt');if(!box||!window.CRONO)return;
@@ -222,7 +273,7 @@
     const T0=D('2026-11-30'),T1=D('2027-04-26');
     const MES=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
     const COR={med:'#C0EE4E',aprov:'#C8A7AE',est:'#06C6AE'};
-    const NOMES={'B2B (Alimentar e Especializado)':'B2B Varejo'};
+    const NOMES={'DTC Lojas Próprias':'Lojas Próprias','DTC Franquias':'Franquias','B2B (Alimentar e Especializado)':'Varejo'};
     function desenha(c){
       const cr=C[c],W=1456,H=542,LX=440,TOP=34;
       const prin=cr.et.filter(e=>e.tipo!=='par'),par=cr.et.filter(e=>e.tipo==='par');
@@ -259,18 +310,18 @@
         else if(e.tipo==='par')Object.assign(at,{fill:'none',stroke:'#F2F1E9','stroke-width':1.6,'stroke-opacity':.8});
         else at.fill=COR[e.tipo];
         const r=el('rect',at);r.style.animationDelay=(.15+k*.05)+'s';
-        el('title',{},r).textContent=e.n+' · '+br(a)+' a '+br(D(e.f))+' · '+e.du+' du · '+e.fonte;
+        el('title',{},r).textContent=e.n+' · '+br(a)+' a '+br(D(e.f))+' · '+e.du+' dias úteis';
         const fim=x(b)>W-190;
-        txt(br(a)+(e.du>1?' a '+br(D(e.f)):'')+' · '+e.du+' du',{x:fim?x(a)-6:x(b)+6,y:y+RH*.62,'text-anchor':fim?'end':'start','font-family':'Space Mono','font-size':9.5,fill:'#F2F1E9','fill-opacity':.6});
+        txt(br(a)+(e.du>1?' a '+br(D(e.f)):'')+' · '+e.du+(e.du>1?' dias':' dia'),{x:fim?x(a)-6:x(b)+6,y:y+RH*.62,'text-anchor':fim?'end':'start','font-family':'Space Mono','font-size':9.5,fill:'#F2F1E9','fill-opacity':.6});
       };
       prin.forEach((e,k)=>linha(e,k,false));
       const yp=TOP+prin.length*RH;
-      txt('EM PARALELO',{x:LX-14,y:yp+RH*.62,'text-anchor':'end','font-family':'Space Mono','font-size':10,fill:'#C0EE4E','letter-spacing':2});
+      txt('AO MESMO TEMPO',{x:LX-14,y:yp+RH*.62,'text-anchor':'end','font-family':'Space Mono','font-size':10,fill:'#C0EE4E','letter-spacing':2});
       el('line',{x1:20,y1:yp+RH/2,x2:W-20,y2:yp+RH/2,stroke:'#F2F1E9','stroke-opacity':.12});
       par.forEach((e,k)=>linha(e,prin.length+1+k,true));
       box.innerHTML='';box.appendChild(svg);
       const md=cr.mediano||{};
-      res.innerHTML='<div><b>'+br(D(marco.i))+'/27</b>'+(c===2?'PDVs positivados':'go live em loja')+'</div><div><b>'+(md.pronto_para_o_marco_em||'').slice(0,5)+'</b>pronto na mediana</div><div><b>'+cr.folga+' du</b>de folga no p80</div>';
+      res.innerHTML='<div><b>'+br(D(marco.i))+'/27</b>'+(c===2?'peças no ponto de venda':'campanha na loja')+'</div><div><b>'+(md.pronto_para_o_marco_em||'').slice(0,5)+'</b>tudo pronto, no ritmo normal</div><div><b>'+cr.folga+' dias</b>de folga, mesmo num ritmo lento</div>';
       abas.forEach((x,j)=>x.classList.toggle('on',j===c));
     }
     abas.forEach((b,k)=>{b.textContent=NOMES[C[k].canal]||C[k].canal;b.addEventListener('click',e=>{e.stopPropagation();desenha(k);});});
@@ -320,7 +371,7 @@
      O primeiro clique da pessoa dentro da tela para o temporizador até ela sair e voltar. */
   function roteiro(cls,cfg){(autos[cls]=autos[cls]||[]).push(cfg);}
   // PDF: tela com botões vira uma página por botão (fonte/gerar-pdf.mjs chama estas duas)
-  const SO_UMA_PAGINA=['s-planta'];
+  const SO_UMA_PAGINA=['s-planta','s-papeis'];
   const cfgPdf=()=>{const t=$('.tela.ativa');return SO_UMA_PAGINA.includes(t.classList[1])?null:[t,(autos[t.classList[1]]||[])[0]];};
   window.__pdfEstados=()=>{const r=cfgPdf();if(!r||!r[1])return 0;const n=r[1].itens(r[0]).length;return n>1?n:0;};
   window.__pdfEstado=k=>{const [t,c]=cfgPdf();c.itens(t)[k].click();};
