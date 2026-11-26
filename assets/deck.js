@@ -287,6 +287,36 @@
     };
   })();
 
+  /* ---------------------------------------------------------- virada: a mesma loja no Dia das Mães e no São João */
+  (function(){
+    const c=$('#compVir');if(!c)return;
+    const bs=$$('#lojasVir button'),antes=$('.antes',c),depois=$('.depois img',c);
+    const poe=v=>c.style.setProperty('--x',Math.max(0,Math.min(100,v))+'%');
+    const deX=e=>{const r=c.getBoundingClientRect();return (e.clientX-r.left)/r.width*100;};
+    let arr=false,anim=null;
+    c.addEventListener('pointerdown',e=>{arr=true;cancelAnimationFrame(anim);c.setPointerCapture(e.pointerId);poe(deX(e));e.stopPropagation();});
+    c.addEventListener('pointermove',e=>{if(arr)poe(deX(e));});
+    c.addEventListener('pointerup',()=>{arr=false;});
+    c.addEventListener('click',e=>e.stopPropagation());
+    // começa no Dia das Mães, vira São João e para no meio
+    function varre(fim){
+      cancelAnimationFrame(anim);
+      if(reduz){poe(fim);return;}
+      const t0=performance.now();
+      (function passo(tt){const k=Math.min(1,(tt-t0-500)/2800);if(k<0){poe(97);anim=requestAnimationFrame(passo);return;}
+        const v=k<.6?97-(97-5)*(k/.6):5+(fim-5)*((k-.6)/.4);poe(v);if(k<1)anim=requestAnimationFrame(passo);})(t0);
+    }
+    function mostra(k){
+      bs.forEach((b,j)=>b.classList.toggle('on',j===k));
+      antes.src=bs[k].dataset.dm;depois.src=bs[k].dataset.sj;
+      antes.alt='Dia das Mães · '+bs[k].dataset.nome;depois.alt='São João · '+bs[k].dataset.nome;
+      varre(+bs[k].dataset.x||50);
+    }
+    bs.forEach((b,k)=>b.addEventListener('click',e=>{e.stopPropagation();mostra(k);}));
+    aoEntrar['s-virx']=()=>mostra(0);
+    roteiro('s-virx',{itens:()=>bs,ms:()=>6500});
+  })();
+
   /* ---------------------------------------------------------- galeria em cinema */
   (function(){
     const t=$('.s-cine');if(!t)return;
@@ -461,7 +491,7 @@
      O primeiro clique da pessoa dentro da tela para o temporizador até ela sair e voltar. */
   function roteiro(cls,cfg){(autos[cls]=autos[cls]||[]).push(cfg);}
   // PDF: tela com botões vira uma página por botão (fonte/gerar-pdf.mjs chama estas duas)
-  const SO_UMA_PAGINA=['s-planta','s-papeis','s-cine'];
+  const SO_UMA_PAGINA=['s-planta','s-papeis','s-cine','s-virx'];
   const cfgPdf=()=>{const t=$('.tela.ativa');return SO_UMA_PAGINA.includes(t.classList[1])?null:[t,(autos[t.classList[1]]||[])[0]];};
   window.__pdfEstados=()=>{const r=cfgPdf();if(!r||!r[1])return 0;const n=r[1].itens(r[0]).length;return n>1?n:0;};
   window.__pdfEstado=k=>{const [t,c]=cfgPdf();c.itens(t)[k].click();};
