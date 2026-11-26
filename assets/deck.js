@@ -105,7 +105,7 @@
     else if(e.key==='Home')ir(0);else if(e.key==='End')ir(total-1);
     else if(e.key==='m'||e.key==='M')sum.classList.contains('aberto')?fecharSum():abrirSum();
   });
-  const INTERATIVO='a,button,input,.amplia,[data-cursor],#sumario,.janela,.tela-s,.janela-c,.dentro li,.trilha-cap span,.mk,.hs,.gantt-c,.vista-pl img';
+  const INTERATIVO='a,button,input,.amplia,[data-cursor],#sumario,.janela,.tela-s,.janela-c,.dentro li,.trilha-cap span,.mk,.hs,.gantt-c,.vista-pl img,.comp';
   $('#wrap').addEventListener('click',e=>{
     if(e.target.closest(INTERATIVO))return;
     if(sum.classList.contains('aberto'))return;
@@ -172,7 +172,7 @@
     function mostra(k){
       const d=dados[k];lis.forEach((l,j)=>l.classList.toggle('on',j===k));
       $('.im',box).style.backgroundImage='url('+d.dataset.img+')';
-      $('h3',box).textContent=d.dataset.t;$('.au',box).textContent=d.dataset.a;$('p',box).textContent=d.textContent;$('.na',box).textContent='Na loja: '+d.dataset.p;
+      $('h3',box).innerHTML=d.dataset.ic?'<svg class="ic"><use href="#i-'+d.dataset.ic+'"/></svg>':'';$('h3',box).appendChild(document.createTextNode(d.dataset.t));$('.au',box).textContent=d.dataset.a;$('p',box).textContent=d.textContent;$('.na',box).textContent='Na loja: '+d.dataset.p;
       box.classList.remove('troca');void box.offsetWidth;box.classList.add('troca');
     }
     lis.forEach((l,k)=>l.querySelector('button').addEventListener('click',e=>{e.stopPropagation();mostra(k);}));
@@ -219,6 +219,8 @@
   (function(){
     const P=window.PAPEIS||[],F=window.FRENTES||[];
     const NOMEF=['Lojas Próprias','Franquias','Varejo'];
+    const ICP=['loja','pessoas','cubo','pincel','moeda','camera','caminhao','carrinho','pincel','raio','moeda','caminhao','olho','regua','arquivo'];
+    const icone=n=>'<svg class="ic"><use href="#i-'+n+'"/></svg>';
     const pizza=d=>{const a=d[0]*3.6,b=(d[0]+d[1])*3.6;return 'conic-gradient(var(--vinho) 0deg '+a+'deg,var(--cobre) '+a+'deg '+b+'deg,var(--azul) '+b+'deg 360deg)';};
     const fichas=$('#fichas');
     if(fichas)P.forEach((p,k)=>{
@@ -230,14 +232,13 @@
       const divisao=d=>d.map((v,j)=>v?'<span class="f'+j+'" style="flex:'+v+'"><b>'+v+'%</b> '+NOMEF[j]+'</span>':'').join('');
       const maiuscula=t=>t.charAt(0).toUpperCase()+t.slice(1)+'.';
       P.forEach((p,k)=>{
-        const li=document.createElement('li');li.innerHTML='<button data-cursor="Ver"><i></i><span></span></button>';
-        $('i',li).style.background=pizza(p[2]);$('span',li).textContent=p[0];lista.appendChild(li);
+        const li=document.createElement('li');li.innerHTML='<button data-cursor="Ver">'+icone(ICP[k])+'<span></span></button>';$('span',li).textContent=p[0];lista.appendChild(li);
         li.querySelector('button').addEventListener('click',e=>{e.stopPropagation();mostra(k);});
       });
       box.innerHTML='<span class="sen"></span><h3></h3><div class="div-p"></div><p class="mi"></p><div class="col-p"><div><span class="eyebrow">O que entrega</span><ul></ul></div><div><span class="eyebrow">Decide</span><p class="dec"></p><span class="eyebrow">Depende</span><p class="dep"></p><span class="eyebrow">Como a gente mede</span><p class="med"></p></div></div>';
       function mostra(k){
         const p=P[k];$$('li',lista).forEach((l,j)=>l.classList.toggle('on',j===k));
-        $('.sen',box).textContent=p[1]+' · 176 horas por mês, só nesta conta';$('h3',box).textContent=p[0];$('.div-p',box).innerHTML=divisao(p[2]);
+        $('.sen',box).textContent=p[1]+' · 176 horas por mês, só nesta conta';$('h3',box).innerHTML=icone(ICP[k]);$('h3',box).appendChild(document.createTextNode(p[0]));$('.div-p',box).innerHTML=divisao(p[2]);
         $('.mi',box).textContent=p[3];
         const ul=$('ul',box);ul.innerHTML='';p[4].forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li);});
         $('.dec',box).textContent=maiuscula(p[5]);$('.dep',box).textContent=maiuscula(p[6]);$('.med',box).textContent=maiuscula(p[7]);
@@ -254,7 +255,7 @@
     if(tres)F.forEach((f,k)=>{
       const c=document.createElement('div');c.className='fr f'+k+' anima d'+(k+1);
       c.innerHTML='<div class="cab-f"><span class="eyebrow"></span><b></b><div class="nf"><span><em></em>posições</span><span><em></em>pessoas em tempo integral</span><span><em></em>horas por mês</span></div></div><p class="por"></p><ul></ul>';
-      $('.eyebrow',c).textContent=f.canal;$('b',c).textContent=f.nome;
+      $('.eyebrow',c).textContent=f.canal;$('b',c).textContent=f.nome;$('.cab-f',c).insertAdjacentHTML('afterbegin',icone(['loja','pessoas','carrinho'][k]));
       const em=$$('em',c);em[0].textContent=f.pos;em[1].textContent=f.fte;em[2].textContent=f.h.toLocaleString('pt-BR');
       $('.por',c).textContent=f.por;
       f.l.forEach(([n,pc,h])=>{
@@ -265,6 +266,25 @@
     });
   })();
 
+
+
+  /* ---------------------------------------------------------- KV: antes e depois */
+  (function(){
+    const c=$('#compKV');if(!c)return;
+    const poe=v=>c.style.setProperty('--x',Math.max(0,Math.min(100,v))+'%');
+    const deX=e=>{const r=c.getBoundingClientRect();return (e.clientX-r.left)/r.width*100;};
+    let arr=false,anim=null;
+    c.addEventListener('pointerdown',e=>{arr=true;cancelAnimationFrame(anim);c.setPointerCapture(e.pointerId);poe(deX(e));e.stopPropagation();});
+    c.addEventListener('pointermove',e=>{if(arr)poe(deX(e));});
+    c.addEventListener('pointerup',()=>{arr=false;});
+    c.addEventListener('click',e=>e.stopPropagation());
+    aoEntrar['s-kv5']=()=>{
+      if(reduz){poe(50);return;}
+      const t0=performance.now();
+      (function passo(t){const k=Math.min(1,(t-t0-600)/2600);if(k<0){poe(96);anim=requestAnimationFrame(passo);return;}
+        const v=k<.6?96-(96-8)*(k/.6):8+(50-8)*((k-.6)/.4);poe(v);if(k<1)anim=requestAnimationFrame(passo);})(t0);
+    };
+  })();
 
   /* ---------------------------------------------------------- galeria em cinema */
   (function(){
@@ -285,9 +305,9 @@
     const box=$('#cronoGantt');if(!box||!window.CRONO)return;
     const C=window.CRONO,abas=$$('#cronoAbas button'),res=$('#cronoRes');
     const D=s=>new Date(s+'T12:00:00'),br=d=>dd(d.getDate())+'/'+dd(d.getMonth()+1);
-    const T0=D('2026-11-30'),T1=D('2027-04-26');
+    const T0=D('2026-11-23'),T1=D('2027-04-26');
     const MES=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
-    const COR={med:'#C0EE4E',aprov:'#C8A7AE',est:'#06C6AE'};
+    const COR={med:'#C0EE4E',aprov:'#E8412C',est:'#06C6AE'};
     const NOMES={'DTC Lojas Próprias':'Lojas Próprias','DTC Franquias':'Franquias','B2B (Alimentar e Especializado)':'Varejo'};
     function desenha(c){
       const cr=C[c],W=1456,H=542,LX=440,TOP=34;
@@ -303,21 +323,26 @@
       // recesso e carnaval
       [['2026-12-24','2027-01-02','recesso'],['2027-02-08','2027-02-10','carnaval']].forEach(([a,b,n])=>{
         el('rect',{x:x(D(a)),y:TOP-6,width:x(D(b))-x(D(a)),height:H-TOP+6,fill:'#F2F1E9','fill-opacity':.06});
-        txt(n,{x:(x(D(a))+x(D(b)))/2,y:H-4,'text-anchor':'middle','font-family':'Space Mono','font-size':9,fill:'#F2F1E9','fill-opacity':.45});
+        txt(n,{x:(x(D(a))+x(D(b)))/2,y:H-4,'text-anchor':'middle','font-family':'Schibsted Grotesk','font-size':9,fill:'#F2F1E9','fill-opacity':.45});
       });
       for(let m=new Date(2026,11,1,12);m<=T1;m.setMonth(m.getMonth()+1)){
         const xm=x(m);el('line',{x1:xm,y1:TOP-14,x2:xm,y2:H-14,stroke:'#F2F1E9','stroke-opacity':.14});
-        txt(MES[m.getMonth()]+(m.getMonth()===0||m.getMonth()===11?' '+String(m.getFullYear()).slice(2):''),{x:xm+5,y:TOP-18,'font-family':'Space Mono','font-size':10.5,fill:'#F2F1E9','fill-opacity':.65,'letter-spacing':1});
+        txt(MES[m.getMonth()]+(m.getMonth()===0||m.getMonth()===11?' '+String(m.getFullYear()).slice(2):''),{x:xm+5,y:TOP-18,'font-family':'Schibsted Grotesk','font-size':10.5,fill:'#F2F1E9','fill-opacity':.65,'letter-spacing':1});
       }
+      const hoje=new Date();hoje.setHours(12,0,0,0);
+      if(hoje>=T0&&hoje<=T1){const xh=x(hoje);
+        el('line',{x1:xh,y1:TOP-14,x2:xh,y2:H-30,stroke:'#F2F1E9','stroke-width':2.5});
+        el('rect',{x:xh-2,y:H-30,width:112,height:20,fill:'#F2F1E9'});
+        txt('HOJE · '+br(hoje),{x:xh+6,y:H-16,'font-family':'Schibsted Grotesk','font-size':11,'font-weight':800,fill:'#050505','letter-spacing':1});}
       const marco=cr.et.find(e=>e.tipo==='marco'),xm=x(D(marco.i));
       el('line',{x1:xm,y1:TOP-14,x2:xm,y2:H-14,stroke:'#C0EE4E','stroke-dasharray':'4 4','stroke-width':1.5});
       const linha=(e,k,paralela)=>{
         const y=TOP+k*RH,a=D(e.i),b=D(e.f);b.setDate(b.getDate()+1);
         const lab=e.n.length>62?e.n.slice(0,60)+'…':e.n;
-        txt(lab,{x:LX-14,y:y+RH*.62,'text-anchor':'end','font-family':'Space Grotesk','font-size':12,fill:'#F2F1E9','fill-opacity':paralela?.6:.88});
+        txt(lab,{x:LX-14,y:y+RH*.62,'text-anchor':'end','font-family':'Schibsted Grotesk','font-size':12,fill:'#F2F1E9','fill-opacity':paralela?.6:.88});
         if(e.tipo==='marco'){
           el('path',{d:'M'+xm+' '+(y+2)+'l'+(RH/2-2)+' '+(RH/2-2)+'-'+(RH/2-2)+' '+(RH/2-2)+'-'+(RH/2-2)+'-'+(RH/2-2)+'z',fill:'#C0EE4E'});
-          txt(br(a)+' · '+e.n.toLowerCase(),{x:xm-14,y:y+RH*.62,'text-anchor':'end','font-family':'Space Mono','font-size':10.5,'font-weight':700,fill:'#C0EE4E'});
+          txt(br(a)+' · '+e.n.toLowerCase(),{x:xm-14,y:y+RH*.62,'text-anchor':'end','font-family':'Schibsted Grotesk','font-size':10.5,'font-weight':700,fill:'#C0EE4E'});
           return;
         }
         const w=Math.max(4,x(b)-x(a)),at={x:x(a),y:y+3,width:w,height:RH-7,class:'bar'};
@@ -327,11 +352,11 @@
         const r=el('rect',at);r.style.animationDelay=(.15+k*.05)+'s';
         el('title',{},r).textContent=e.n+' · '+br(a)+' a '+br(D(e.f))+' · '+e.du+' dias úteis';
         const fim=x(b)>W-190;
-        txt(br(a)+(e.du>1?' a '+br(D(e.f)):'')+' · '+e.du+(e.du>1?' dias':' dia'),{x:fim?x(a)-6:x(b)+6,y:y+RH*.62,'text-anchor':fim?'end':'start','font-family':'Space Mono','font-size':9.5,fill:'#F2F1E9','fill-opacity':.6});
+        txt(br(a)+(e.du>1?' a '+br(D(e.f)):'')+' · '+e.du+(e.du>1?' dias':' dia'),{x:fim?x(a)-6:x(b)+6,y:y+RH*.62,'text-anchor':fim?'end':'start','font-family':'Schibsted Grotesk','font-size':9.5,fill:'#F2F1E9','fill-opacity':.6});
       };
       prin.forEach((e,k)=>linha(e,k,false));
       const yp=TOP+prin.length*RH;
-      txt('AO MESMO TEMPO',{x:LX-14,y:yp+RH*.62,'text-anchor':'end','font-family':'Space Mono','font-size':10,fill:'#C0EE4E','letter-spacing':2});
+      txt('AO MESMO TEMPO',{x:LX-14,y:yp+RH*.62,'text-anchor':'end','font-family':'Schibsted Grotesk','font-size':10,fill:'#C0EE4E','letter-spacing':2});
       el('line',{x1:20,y1:yp+RH/2,x2:W-20,y2:yp+RH/2,stroke:'#F2F1E9','stroke-opacity':.12});
       par.forEach((e,k)=>linha(e,prin.length+1+k,true));
       box.innerHTML='';box.appendChild(svg);

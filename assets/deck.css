@@ -1,10 +1,10 @@
 /* Deck Alpargatas × 75 LAB · identidade do 75lab.com.br
-   palco fixo 1600x900 escalado; cantos retos; Big Shoulders + Space Grotesk + Space Mono */
+   palco fixo 1600x900 escalado; cantos retos; Big Shoulders + Schibsted Grotesk */
 :root{
   --ink:#050505;--ink-2:#101013;--ink-3:#17171c;--ink-4:#22222a;
   --paper:#F2F1E9;--paper-2:#E7E5DA;--paper-3:#DAD7C8;
   --lime:#C0EE4E;--lime-2:#AFD637;--teal:#01A290;--teal-2:#06C6AE;--alerta:#E8412C;
-  --titulo:'Big Shoulders Display',Impact,sans-serif;--corpo:'Space Grotesk',system-ui,sans-serif;--mono:'Space Mono',ui-monospace,monospace;
+  --titulo:'Big Shoulders Display',Impact,sans-serif;--corpo:'Schibsted Grotesk',system-ui,sans-serif;--mono:'Schibsted Grotesk',system-ui,sans-serif;
   --linha-c:rgba(5,5,5,.16);--linha-e:rgba(242,241,233,.16);
   --mx:50%;--my:50%;
   --miolo:.88;--borda:calc(800px - 728px * var(--miolo));
