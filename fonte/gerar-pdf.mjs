@@ -40,7 +40,11 @@ const esperaImagens = () => pg.evaluate(async () => {
 async function foto(rotulo, link) {
   await pg.waitForTimeout(700);
   const jpg = await pg.screenshot({ type: 'jpeg', quality: QUALIDADE, timeout: 180000 });
-  paginas.push({ jpg, link });
+  // botões e e-mails marcados com data-pdf-link viram link clicável no PDF, no mesmo lugar da página
+  const links = await pg.evaluate(() => [...document.querySelectorAll('.tela.ativa [data-pdf-link]')]
+    .filter((a) => a.offsetParent !== null && a.href)
+    .map((a) => { const r = a.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height, uri: a.href }; }));
+  paginas.push({ jpg, link, links });
   if (PASTA) writeFileSync(`${PASTA}/${String(paginas.length).padStart(2, '0')}.jpg`, jpg);
   console.log('página', paginas.length, rotulo, Math.round(jpg.length / 1024) + ' KB');
 }
@@ -84,10 +88,13 @@ poe('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
 const n = paginas.length, idPag = (i) => 3 + i * 3;
 obj(1, () => poe('<< /Type /Catalog /Pages 2 0 R >>'));
 obj(2, () => poe(`<< /Type /Pages /Count ${n} /Kids [${paginas.map((_, i) => `${idPag(i)} 0 R`).join(' ')}] >>`));
-paginas.forEach(({ jpg, link }, i) => {
+paginas.forEach(({ jpg, link, links }, i) => {
   const p = idPag(i);
   const conteudo = `q ${W} 0 0 ${H} 0 0 cm /Im0 Do Q`;
-  const annot = link ? ` /Annots [<< /Type /Annot /Subtype /Link /Rect [0 0 ${W} ${H}] /Border [0 0 0] /A << /S /URI /URI (${link}) >> >>]` : '';
+  const k = W / 1600, anns = [];
+  if (link) anns.push(`<< /Type /Annot /Subtype /Link /Rect [0 0 ${W} ${H}] /Border [0 0 0] /A << /S /URI /URI (${link}) >> >>`);
+  (links || []).forEach((l) => anns.push(`<< /Type /Annot /Subtype /Link /Rect [${(l.x * k).toFixed(1)} ${(H - (l.y + l.h) * k).toFixed(1)} ${((l.x + l.w) * k).toFixed(1)} ${(H - l.y * k).toFixed(1)}] /Border [0 0 0] /A << /S /URI /URI (${l.uri.replace(/[()\\]/g, '')}) >> >>`));
+  const annot = anns.length ? ` /Annots [${anns.join(' ')}]` : '';
   obj(p, () => poe(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /XObject << /Im0 ${p + 2} 0 R >> >> /Contents ${p + 1} 0 R${annot} >>`));
   obj(p + 1, () => poe(`<< /Length ${conteudo.length} >>\nstream\n${conteudo}\nendstream`));
   obj(p + 2, () => { const [PX, PY] = tamJpg(jpg); poe(`<< /Type /XObject /Subtype /Image /Width ${PX} /Height ${PY} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpg.length} >>\nstream\n`); poe(jpg); poe('\nendstream'); });

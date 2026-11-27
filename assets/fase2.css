@@ -1837,3 +1837,86 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 .pdf:not(.estados) .s-central.v2 .mods li.on{background:#fff;color:inherit;border-color:var(--linha-c)}
 .pdf:not(.estados) .s-central.v2 .mods li.on i{background:var(--teal);color:#fff}
 .pdf:not(.estados) .s-central.v2 .mods li.on p{position:static;width:auto;padding:0 14px 7px 54px;font-family:inherit;font-size:13px;color:inherit}
+
+/* =====================================================================
+   Uma tela por peça: a foto na loja grande, o mapa com o ponto e a peça sozinha no cinza
+   ===================================================================== */
+.s-peca>.miolo>.eyebrow{position:absolute;left:72px;top:92px}
+.s-peca h2{position:absolute;left:72px;top:122px;width:1000px;font-size:44px}
+.s-peca .amb-p{position:absolute;left:72px;top:196px;width:900px;margin:0}
+.s-peca .amb-p img{display:block;width:900px;height:506px;object-fit:cover;background:var(--paper-3);box-shadow:0 18px 40px rgba(0,0,0,.18);cursor:zoom-in}
+.s-peca .amb-p figcaption{display:flex;gap:14px;align-items:flex-start;padding-top:16px}
+.s-peca .amb-p figcaption i{flex:none;width:34px;height:34px;border-radius:50%;background:var(--vinho);color:var(--creme);display:grid;place-items:center;font-style:normal;font-family:var(--mono);font-weight:700;font-size:14px}
+.s-peca .amb-p figcaption b{display:block;font-family:var(--titulo);font-weight:900;font-size:28px;text-transform:uppercase;line-height:1;margin:4px 0 6px}
+.s-peca .amb-p figcaption p{font-size:15.5px;line-height:1.45;max-width:840px}
+.s-peca .mapa-p{position:absolute;left:1000px;right:72px;top:196px;background:#fff;box-shadow:0 12px 30px rgba(0,0,0,.14)}
+.s-peca .mapa-p img{display:block;width:100%;height:auto}
+.s-peca .mapa-p .entrada{position:absolute;left:0;bottom:-22px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.s-peca .mapa-p .entrada::before{content:'←';font-size:13px}
+.s-peca .pt{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:var(--vinho);color:var(--creme);display:grid;place-items:center;font-style:normal;font-family:var(--mono);font-weight:700;font-size:11px;box-shadow:0 0 0 2px var(--creme),0 3px 8px rgba(0,0,0,.3);opacity:.5}
+.s-peca .pt.on{opacity:1;background:var(--ink);transform:scale(1.4);z-index:2}
+.s-peca .pt.on::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--ink);animation:pulsa-hs 1.8s ease-out infinite}
+.pdf .s-peca .pt.on::after{display:none}
+.s-peca .peca-p{position:absolute;left:1000px;right:72px;top:524px;height:276px;margin:0;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.14)}
+.s-peca .peca-p img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;cursor:zoom-in}
+.s-peca .peca-p figcaption{position:absolute;left:12px;top:12px;display:flex;gap:6px;pointer-events:none}
+.s-peca .peca-p figcaption i,.s-peca .peca-p figcaption b{font-style:normal;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 8px;line-height:1.2}
+.s-peca .peca-p figcaption i{background:var(--ink);color:var(--paper)}
+.s-peca .peca-p figcaption b{background:var(--paper);color:var(--ink)}
+
+/* =====================================================================
+   Celular: toque para começar em tela cheia, e botões maiores
+   ===================================================================== */
+#btnCheia{display:none}
+.toque #btnCheia{display:grid}
+.toque #rodape .nav button{width:64px;height:54px;font-size:26px}
+.toque #cursor,.toque #anel{display:none!important}
+#cheia{position:fixed;inset:0;z-index:130;background:rgba(5,5,5,.94);color:#F2F1E9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:28px;text-align:center;font-family:'Schibsted Grotesk',sans-serif}
+#cheia[hidden]{display:none}
+#cheia img{height:22px}
+#cheia h3{font-family:'Big Shoulders Display',sans-serif;font-weight:900;font-size:40px;text-transform:uppercase;line-height:1}
+#cheia p{font-size:15px;line-height:1.5;max-width:440px;opacity:.85}
+#cheia .sem-api-t{display:none}
+#cheia.sem-api .sem-api-t{display:block}
+#cheia.sem-api .com-api{display:none}
+#cheia .botao{background:#C0EE4E;color:#050505;border-color:#C0EE4E}
+.pdf #cheia,.pdf #btnCheia{display:none!important}
+
+/* =====================================================================
+   PDF: papéis com o escopo inteiro, em três páginas de cinco pessoas
+   ===================================================================== */
+.papeis-pdf{display:none}
+.pdf .s-papeis .todos-p{display:none!important}
+.pdf .s-papeis .papeis-pdf{display:block;position:absolute;left:72px;right:72px;top:176px;bottom:92px}
+.papeis-pdf .grupo{display:none}
+.s-papeis[data-pg="0"] .grupo[data-g="0"],.s-papeis[data-pg="1"] .grupo[data-g="1"],.s-papeis[data-pg="2"] .grupo[data-g="2"]{display:block}
+.papeis-pdf .grupo>.eyebrow{display:block;margin-bottom:14px;color:var(--teal)}
+.papeis-pdf .cards{display:grid;grid-template-columns:repeat(5,1fr);gap:0 18px}
+.papeis-pdf .pc{border-top:3px solid var(--ink);padding-top:10px;font-size:12px;line-height:1.38}
+.papeis-pdf .sen{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.papeis-pdf .sen .ic{width:20px;height:20px;flex:none}
+.papeis-pdf .sen em{font-style:normal}
+.papeis-pdf h3{margin:7px 0 8px;font-family:var(--titulo);font-weight:900;font-size:19px;line-height:1.02;text-transform:uppercase;min-height:39px}
+.papeis-pdf .div-p{display:flex;height:17px;margin-bottom:9px;overflow:hidden}
+.papeis-pdf .div-p span{overflow:hidden;white-space:nowrap;color:#fff;padding:0 5px;font-size:9.5px;line-height:17px}
+.papeis-pdf .div-p span b{font-weight:800}
+.papeis-pdf .div-p .f0{background:var(--vinho)}.papeis-pdf .div-p .f1{background:var(--cobre)}.papeis-pdf .div-p .f2{background:var(--azul)}
+.papeis-pdf .mi{font-size:13px;line-height:1.4;margin-bottom:4px}
+.papeis-pdf .rot{display:block;margin-top:9px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.papeis-pdf ul{margin:4px 0 0 15px;padding:0}
+.papeis-pdf li{font-size:12px;line-height:1.35;margin-bottom:3px}
+.papeis-pdf .dec,.papeis-pdf .dep,.papeis-pdf .med{font-size:12px;line-height:1.38;margin-top:3px}
+
+/* =====================================================================
+   PDF: painel do QR com as três telas inteiras, sem corte
+   ===================================================================== */
+.pdf:not(.estados) .s-qr .trio-q{left:72px!important;right:72px;width:auto!important;top:220px!important;grid-template-columns:1fr 1fr!important;grid-template-rows:270px 270px;gap:14px 16px!important}
+.pdf:not(.estados) .s-qr .trio-q figure{display:flex;flex-direction:column;min-height:0}
+.pdf:not(.estados) .s-qr .trio-q img{flex:1;min-height:0;width:100%;height:auto!important;object-fit:contain!important;object-position:center!important;background:var(--ink)}
+.pdf:not(.estados) .s-qr .lista-q{left:808px;top:504px;width:720px;display:grid;grid-template-columns:1fr 1fr;gap:2px 22px}
+.pdf:not(.estados) .s-qr .lista-q li{padding:10px 0 8px}
+.pdf:not(.estados) .s-qr .lista-q span{font-size:13px}
+
+/* PDF: o botão da campanha de São João aparece (e vira link no PDF) */
+.pdf .s-virx a.abrir-sj.so-tela{display:inline-flex!important}
+

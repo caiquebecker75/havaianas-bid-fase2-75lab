@@ -7,6 +7,7 @@
   const modoPdf=new URLSearchParams(location.search).has('pdf');
   if(modoPdf)document.documentElement.classList.add('pdf');
   const reduz=matchMedia('(prefers-reduced-motion: reduce)').matches||modoPdf;
+  const toque=matchMedia('(pointer:coarse)').matches&&!modoPdf;
   let atual=0, escalaAtual=1, emTransicao=false, pendente=null;
   const total=telas.length, dd=n=>String(n).padStart(2,'0');
   const autos={};let autoAtivos=[];
@@ -107,12 +108,40 @@
     else if(e.key==='Home')ir(0);else if(e.key==='End')ir(total-1);
     else if(e.key==='m'||e.key==='M')sum.classList.contains('aberto')?fecharSum():abrirSum();
   });
+  /* celular e tablet: o botão fica pequeno demais para o dedo, então o toque no próprio slide passa a tela
+     (terço esquerdo volta, o resto avança) e o deslize para o lado também. No computador continua só botão e teclado. */
+  if(toque){
+    document.documentElement.classList.add('toque');
+    const FIXO='a,button,input,select,textarea,#sumario,#caixa,#cheia,.mk,.hs,.comp,.gantt-c';
+    $('#wrap').addEventListener('click',e=>{
+      if($('#caixa').classList.contains('aberta')||sum.classList.contains('aberto'))return;
+      const el=e.target.closest(FIXO);if(el&&!el.matches('.amplia,[data-amplia]'))return;
+      ir(e.clientX<innerWidth/3?atual-1:atual+1);
+    });
+    let x0=null,y0=null;
+    addEventListener('touchstart',e=>{const t0=e.touches[0];x0=e.target.closest('.comp,#sumario')?null:t0.clientX;y0=t0.clientY;},{passive:true});
+    addEventListener('touchend',e=>{
+      if(x0===null)return;const t1=e.changedTouches[0],dx=t1.clientX-x0,dy=t1.clientY-y0;x0=null;
+      if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5&&!sum.classList.contains('aberto'))ir(dx<0?atual+1:atual-1);
+    });
+    // tela cheia: Android e iPad deixam abrir no toque; o iPhone não deixa, então o aviso ensina a pôr na Tela de Início
+    const de=document.documentElement,pede=de.requestFullscreen||de.webkitRequestFullscreen;
+    const pode=!!pede&&!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
+    const app=matchMedia('(display-mode: fullscreen),(display-mode: standalone)').matches||navigator.standalone===true;
+    const entra=()=>{
+      if(!pode||document.fullscreenElement||document.webkitFullscreenElement)return;
+      try{const p=pede.call(de,{navigationUI:'hide'});if(p&&p.then)p.then(()=>{try{screen.orientation.lock('landscape').catch(()=>{});}catch(er){}}).catch(()=>{});}catch(er){}
+    };
+    const ch=$('#cheia');
+    if(ch&&!app){ch.hidden=false;ch.classList.toggle('sem-api',!pode);ch.addEventListener('click',e=>{e.stopPropagation();entra();ch.hidden=true;});}
+    const bc=$('#btnCheia');if(bc){if(!pode||app)bc.remove();else bc.addEventListener('click',e=>{e.stopPropagation();entra();});}
+  }else{const bc=$('#btnCheia');if(bc)bc.remove();}
 
   /* lightbox (delegado: vale também para o que é criado depois) */
   const caixa=$('#caixa');
   function abrirCaixa(src,leg){$('#cxImg').src=src;$('#cxTxt').textContent=leg||'';caixa.classList.add('aberta');}
   function fecharCaixa(){caixa.classList.remove('aberta');}
-  stage.addEventListener('click',e=>{const el=e.target.closest('[data-amplia]');if(!el)return;e.stopPropagation();abrirCaixa(el.dataset.amplia,el.dataset.legenda);});
+  stage.addEventListener('click',e=>{if(toque)return;const el=e.target.closest('[data-amplia]');if(!el)return;e.stopPropagation();abrirCaixa(el.dataset.amplia,el.dataset.legenda);});
   caixa.addEventListener('click',e=>{if(e.target===caixa||e.target.closest('.fechar'))fecharCaixa();});
 
   /* ---------------------------------------------------------- cursor e luz */
@@ -286,7 +315,28 @@
         $('b',d).textContent=p[0];$('span',d).textContent=p[2].map((v,j)=>v?NOMEF[j]+' '+v+'%':'').filter(Boolean).join(' · ');$('p',d).textContent=p[3];todos.appendChild(d);
       });
       mostra(0);aoEntrar['s-papeis']=()=>mostra(0);
-      roteiro('s-papeis',{itens:()=>$$('button',lista),texto:k=>P[k][3]+' '+P[k][4].join(' '),extra:-1500});
+      let pdfPapeis=null;
+      if(modoPdf){
+        const G=[[0,1,2,3,4],[5,6,12,13,14],[7,8,9,10,11]];
+        const TIT=['Lojas Próprias e Franquias','Lojas Próprias e Franquias, e quem atende as três frentes','Varejo'];
+        const pp=document.createElement('div');pp.className='papeis-pdf';
+        G.forEach((g,gi)=>{
+          const gr=document.createElement('div');gr.className='grupo';gr.dataset.g=gi;
+          gr.innerHTML='<span class="eyebrow"></span><div class="cards"></div>';$('.eyebrow',gr).textContent=TIT[gi]+' · página '+(gi+1)+' de 3';
+          g.forEach(k=>{
+            const p=P[k],cd=document.createElement('div');cd.className='pc';
+            cd.innerHTML='<span class="sen">'+icone(ICP[k])+'<em></em></span><h3></h3><div class="div-p">'+divisao(p[2])+'</div><p class="mi"></p><span class="rot">O que entrega</span><ul></ul><span class="rot">Decide</span><p class="dec"></p><span class="rot">Depende</span><p class="dep"></p><span class="rot">Como a gente mede</span><p class="med"></p>';
+            $('em',cd).textContent=p[1]+' · 176 h por mês';$('h3',cd).textContent=p[0];$('.mi',cd).textContent=p[3];
+            p[4].forEach(x=>{const li=document.createElement('li');li.textContent=x;$('ul',cd).appendChild(li);});
+            $('.dec',cd).textContent=maiuscula(p[5]);$('.dep',cd).textContent=maiuscula(p[6]);$('.med',cd).textContent=maiuscula(p[7]);
+            $('.cards',gr).appendChild(cd);
+          });
+          pp.appendChild(gr);
+        });
+        const sec=lista.closest('.tela');sec.dataset.pg='0';(lista.closest('.miolo')||sec).appendChild(pp);
+        pdfPapeis={n:3,mostra:(k,t)=>{t.dataset.pg=String(k);}};
+      }
+      roteiro('s-papeis',{itens:()=>$$('button',lista),texto:k=>P[k][3]+' '+P[k][4].join(' '),extra:-1500,pdf:pdfPapeis});
     }
     const tres=$('#tresFrentes');
     if(tres)F.forEach((f,k)=>{
@@ -546,10 +596,10 @@
   function roteiro(cls,cfg){(autos[cls]=autos[cls]||[]).push(cfg);}
   // PDF: tela com botões vira uma página por botão (fonte/gerar-pdf.mjs chama estas duas)
   // no PDF estas telas viram uma página só, com tudo à mostra (CSS .pdf:not(.estados)); só o cronograma continua com uma página por aba
-  const SO_UMA_PAGINA=['s-planta','s-teo','s-papeis','s-cine','s-virx','s-simu','s-central','s-qr'];
+  const SO_UMA_PAGINA=['s-planta','s-teo','s-cine','s-virx','s-simu','s-central','s-qr'];
   const cfgPdf=()=>{const t=$('.tela.ativa');return SO_UMA_PAGINA.includes(t.classList[1])?null:[t,(autos[t.classList[1]]||[])[0]];};
-  window.__pdfEstados=()=>{const r=cfgPdf();if(!r||!r[1])return 0;const n=r[1].itens(r[0]).length;return n>1?n:0;};
-  window.__pdfEstado=k=>{const [t,c]=cfgPdf();c.itens(t)[k].click();};
+  window.__pdfEstados=()=>{const r=cfgPdf();if(!r||!r[1])return 0;if(r[1].pdf)return r[1].pdf.n;const n=r[1].itens(r[0]).length;return n>1?n:0;};
+  window.__pdfEstado=k=>{const [t,c]=cfgPdf();if(c.pdf)c.pdf.mostra(k,t);else c.itens(t)[k].click();};
   const leitura=txt=>Math.max(4500,Math.min(12000,3000+String(txt||'').replace(/\s+/g,' ').trim().length*45));
   function pararAutos(){autoAtivos.forEach(clearTimeout);autoAtivos=[];$$('.relogio-auto').forEach(r=>r.remove());}
   function iniciarAutos(t){
