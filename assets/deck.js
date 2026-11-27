@@ -97,26 +97,15 @@
   $$('[data-sumario]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();abrirSum();}));
   $('.fechar',sum).addEventListener('click',e=>{e.stopPropagation();fecharSum();});
 
-  /* teclado, clique e toque */
+  /* só teclado e botões passam de tela: clique solto e arraste não mudam de tela */
   addEventListener('keydown',e=>{
     if(caixa.classList.contains('aberta')){if(e.key==='Escape')fecharCaixa();return;}
     if(sum.classList.contains('aberto')){if(e.key==='Escape')fecharSum();return;}
+    if((e.key===' '||e.key==='Enter')&&e.target.closest&&e.target.closest('a,button,input,textarea,select'))return;
     if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();ir(atual+1);}
     else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();ir(atual-1);}
     else if(e.key==='Home')ir(0);else if(e.key==='End')ir(total-1);
     else if(e.key==='m'||e.key==='M')sum.classList.contains('aberto')?fecharSum():abrirSum();
-  });
-  const INTERATIVO='a,button,input,.amplia,[data-cursor],#sumario,.janela,.tela-s,.janela-c,.dentro li,.trilha-cap span,.mk,.hs,.gantt-c,.vista-pl img,.comp';
-  $('#wrap').addEventListener('click',e=>{
-    if(e.target.closest(INTERATIVO))return;
-    if(sum.classList.contains('aberto'))return;
-    ir(e.clientX>innerWidth/2?atual+1:atual-1);
-  });
-  let x0=null,y0=null;
-  addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
-  addEventListener('touchend',e=>{
-    if(x0===null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;
-    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy))ir(dx<0?atual+1:atual-1);x0=null;
   });
 
   /* lightbox (delegado: vale também para o que é criado depois) */
@@ -165,19 +154,38 @@
     roteiro('s-kv2',{itens:()=>lis.map(l=>l.querySelector('button')),texto:k=>lis[k].textContent});
   })();
 
-  /* ---------------------------------------------------------- conceitos acadêmicos */
+  /* ---------------------------------------------------------- conceitos acadêmicos: trilha de pontos e a ideia em texto grande */
   (function(){
     const t=$('.s-teo');if(!t)return;
     const dados=[...$('#conceitosDados').content.querySelectorAll('i')],lis=$$('#conceitos li',t),box=$('#conceitoBox');
-    box.innerHTML='<div class="im"></div><div class="tx"><h3></h3><span class="au"></span><p></p><span class="na"></span></div>';
+    box.innerHTML='<div class="ico-t"><svg class="ic"><use href="#i-olho"/></svg></div><span class="num-t"></span><h3></h3><span class="au"><svg class="ic p"><use href="#i-livro"/></svg><span></span></span><p></p><span class="na"><svg class="ic p"><use href="#i-pin"/></svg><span></span></span>';
+    const svg=$('.fio-teo',t),trilho=$('.trilho',svg),liga=$('.liga',svg),ponta=$('.ponta',svg);
+    const rel=el=>{let x=0,y=0,e=el;while(e&&e!==t){x+=e.offsetLeft;y+=e.offsetTop;e=e.offsetParent;}return {x,y,w:el.offsetWidth,h:el.offsetHeight};};
+    let atual=0;
+    function desenha(){
+      const cs=lis.map(l=>{const r=rel($('.no',l));return [r.x+r.w/2,r.y+r.h/2];});
+      if(!cs[0][1])return;
+      let d='M'+cs[0][0]+','+cs[0][1];
+      for(let k=1;k<cs.length;k++){const a=cs[k-1],b=cs[k],my=(a[1]+b[1])/2;d+=' C'+a[0]+','+my+' '+b[0]+','+my+' '+b[0]+','+b[1];}
+      trilho.setAttribute('d',d);
+      // fio: do fim do nome ativo até a coluna da ideia, e dali sobe (ou desce) até o ícone
+      const b=rel($('b',lis[atual])),ic=rel($('.ico-t',box)),bx=rel(box);
+      const x1=b.x+b.w+20,y1=cs[atual][1],xs=bx.x-34,x2=ic.x-12,y2=ic.y+ic.h/2,dy=y2-y1,s=Math.sign(dy)||1,r=Math.min(18,Math.abs(dy)/2);
+      const f=Math.abs(dy)<8?'M'+x1+','+y1+' C'+xs+','+y1+' '+xs+','+y2+' '+x2+','+y2
+        :'M'+x1+','+y1+' H'+(xs-r)+' Q'+xs+','+y1+' '+xs+','+(y1+s*r)+' V'+(y2-s*r)+' Q'+xs+','+y2+' '+(xs+r)+','+y2+' H'+x2;
+      liga.setAttribute('d',f);ponta.setAttribute('cx',x1);ponta.setAttribute('cy',y1);
+    }
     function mostra(k){
-      const d=dados[k];lis.forEach((l,j)=>l.classList.toggle('on',j===k));
-      $('.im',box).style.backgroundImage='url('+d.dataset.img+')';
-      $('h3',box).innerHTML=d.dataset.ic?'<svg class="ic"><use href="#i-'+d.dataset.ic+'"/></svg>':'';$('h3',box).appendChild(document.createTextNode(d.dataset.t));$('.au',box).textContent=d.dataset.a;$('p',box).textContent=d.textContent;$('.na',box).textContent='Na loja: '+d.dataset.p;
-      box.classList.remove('troca');void box.offsetWidth;box.classList.add('troca');
+      atual=k;const d=dados[k];lis.forEach((l,j)=>l.classList.toggle('on',j===k));
+      $('.ico-t use',box).setAttribute('href','#i-'+(d.dataset.ic||'olho'));
+      $('.num-t',box).textContent=String(k+1).padStart(2,'0');
+      $('h3',box).textContent=d.dataset.t;$('.au span',box).textContent=d.dataset.a;$('p',box).textContent=d.textContent;$('.na span',box).textContent='Na loja: '+d.dataset.p;
+      desenha();
+      [box,svg].forEach(el=>{el.classList.toggle('troca',false);void el.getBoundingClientRect();el.classList.toggle('troca',true);});
     }
     lis.forEach((l,k)=>l.querySelector('button').addEventListener('click',e=>{e.stopPropagation();mostra(k);}));
     aoEntrar['s-teo']=()=>mostra(0);mostra(0);
+    if(document.fonts)document.fonts.ready.then(desenha);
     roteiro('s-teo',{itens:()=>lis.map(l=>l.querySelector('button')),texto:k=>dados[k].textContent});
   })();
 
@@ -280,10 +288,10 @@
     c.addEventListener('pointerup',()=>{arr=false;});
     c.addEventListener('click',e=>e.stopPropagation());
     aoEntrar['s-kv5']=()=>{
-      if(reduz){poe(50);return;}
+      if(reduz){poe(41);return;}
       const t0=performance.now();
-      (function passo(t){const k=Math.min(1,(t-t0-600)/2600);if(k<0){poe(96);anim=requestAnimationFrame(passo);return;}
-        const v=k<.6?96-(96-8)*(k/.6):8+(50-8)*((k-.6)/.4);poe(v);if(k<1)anim=requestAnimationFrame(passo);})(t0);
+      (function passo(t){const k=Math.min(1,(t-t0-600)/2600);if(k<0){poe(4);anim=requestAnimationFrame(passo);return;}
+        const v=k<.6?4+(96-4)*(k/.6):96-(96-41)*((k-.6)/.4);poe(v);if(k<1)anim=requestAnimationFrame(passo);})(t0);
     };
   })();
 

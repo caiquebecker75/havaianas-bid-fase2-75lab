@@ -226,24 +226,6 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 .s-kv4 .kv-imagem p b{color:var(--rosa)}
 
 /* ===================================================== conceitos */
-.s-teo .conceitos{position:absolute;left:72px;top:200px;width:470px;list-style:none}
-.s-teo .conceitos li{border-top:2px solid var(--linha-c)}
-.s-teo .conceitos li:last-child{border-bottom:2px solid var(--linha-c)}
-.s-teo .conceitos button{display:flex;align-items:center;gap:16px;width:100%;text-align:left;padding:12px 10px;transition:background .25s,padding .25s}
-.s-teo .conceitos i{font-style:normal;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--vinho)}
-.s-teo .conceitos b{font-family:var(--titulo);font-weight:900;font-size:27px;text-transform:uppercase}
-.s-teo .conceitos li.on button{background:var(--azul);color:var(--creme);padding-left:18px}
-.s-teo .conceitos li.on i{color:var(--creme)}
-.s-teo .conceitos li button:hover{padding-left:18px}
-.s-teo .conceito-box{position:absolute;left:600px;right:72px;top:200px;bottom:96px;display:grid;grid-template-columns:1fr 1fr;gap:28px;background:var(--paper-2)}
-.s-teo .conceito-box .im{background-size:cover;background-position:center}
-.s-teo .conceito-box .tx{padding:30px 30px 26px 0;display:flex;flex-direction:column}
-.s-teo .conceito-box h3{font-size:44px;line-height:1;margin-bottom:10px}
-.s-teo .conceito-box .au{font-family:var(--mono);font-size:11px;letter-spacing:.04em;line-height:1.5;color:var(--vinho);margin-bottom:18px}
-.s-teo .conceito-box p{font-size:17px;line-height:1.55}
-.s-teo .conceito-box .na{margin-top:auto;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--lime);padding:10px 12px}
-.s-teo .conceito-box.troca .tx>*{animation:sobe .5s ease both}
-.s-teo .conceito-box.troca .im{animation:aparece .6s ease both}
 @keyframes sobe{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes aparece{from{opacity:0}to{opacity:1}}
 .s-teo .todos-c{display:none}
@@ -894,17 +876,6 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 /* ---------- conceitos no azul da Aura, cartão vertical */
 .s-teo[data-tema=aura] h2{color:var(--creme)}
 .s-teo[data-tema=aura] h2 em{color:var(--cafe)}
-.s-teo[data-tema=aura] .conceitos li{border-color:rgba(255,246,234,.35)}
-.s-teo[data-tema=aura] .conceitos i{color:var(--creme);opacity:.7}
-.s-teo[data-tema=aura] .conceitos b{font-size:30px}
-.s-teo[data-tema=aura] .conceitos li.on button{background:var(--creme);color:var(--cafe)}
-.s-teo[data-tema=aura] .conceitos li.on i{color:var(--vinho);opacity:1}
-.s-teo[data-tema=aura] .conceito-box{left:620px;background:var(--creme);color:var(--cafe);grid-template-columns:1fr 1fr;gap:0;box-shadow:0 30px 60px rgba(30,45,52,.35)}
-.s-teo[data-tema=aura] .conceito-box .im{position:relative}
-.s-teo[data-tema=aura] .conceito-box .tx{padding:34px 34px 28px}
-.s-teo[data-tema=aura] .conceito-box h3{font-size:46px;color:var(--vinho)}
-.s-teo[data-tema=aura] .conceito-box p{font-family:var(--serif);font-size:20px;line-height:1.45}
-.s-teo[data-tema=aura] .conceito-box .na{background:var(--azul-4);color:var(--creme)}
 .s-canais2 .ct::before{background:linear-gradient(180deg,rgba(8,10,12,.94) 0%,rgba(8,10,12,.6) 20%,rgba(8,10,12,.12) 40%,var(--cor) 74%)}
 .s-canais2 h2{text-shadow:0 4px 24px rgba(0,0,0,.6)}
 
@@ -1034,15 +1005,15 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 .s-kv5 h2{position:absolute;left:72px;top:96px;width:1400px;font-size:50px}
 .s-kv5 .comp{position:absolute;left:72px;top:184px;width:900px;height:563px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.5);user-select:none;cursor:ew-resize;touch-action:none}
 .s-kv5 .comp .antes{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.s-kv5 .comp .depois{position:absolute;inset:0;clip-path:inset(0 0 0 var(--x))}
+.s-kv5 .comp .depois{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--x)) 0 0)}
 .s-kv5 .comp .depois img{width:100%;height:100%;object-fit:cover;display:block}
 .s-kv5 .comp .rot{position:absolute;top:14px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;z-index:2}
-.s-kv5 .comp .r-antes{left:14px;background:var(--ink);color:var(--paper)}
-.s-kv5 .comp .r-depois{right:14px;background:var(--lime);color:var(--ink)}
+.s-kv5 .comp .r-antes{right:14px;background:var(--ink);color:var(--paper)}
+.s-kv5 .comp .r-depois{left:14px;background:var(--lime);color:var(--ink)}
 .s-kv5 .puxador{position:absolute;top:0;bottom:0;left:var(--x);width:4px;margin-left:-2px;background:var(--lime);font-style:normal;z-index:3}
 .s-kv5 .puxador b{position:absolute;top:50%;left:50%;width:50px;height:50px;margin:-25px 0 0 -25px;border-radius:50%;background:var(--lime);color:var(--ink);display:grid;place-items:center;font-size:22px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
-.s-kv5 .ajustes2{position:absolute;left:1010px;right:72px;top:184px;list-style:none;display:grid;gap:12px}
-.s-kv5 .ajustes2 li{display:flex;gap:16px;background:var(--ink-3);padding:16px 18px;border-left:4px solid var(--lime)}
+.s-kv5 .ajustes2{position:absolute;left:1010px;right:72px;top:184px;list-style:none;display:grid;gap:10px}
+.s-kv5 .ajustes2 li{display:flex;gap:16px;background:var(--ink-3);padding:13px 18px;border-left:4px solid var(--lime)}
 .s-kv5 .ajustes2 li>.ic{width:36px;height:36px;color:var(--lime);flex:none}
 .s-kv5 .ajustes2 b{display:flex;align-items:center;gap:10px;font-family:var(--titulo);font-weight:900;font-size:26px;text-transform:uppercase;margin-bottom:4px}
 .s-kv5 .ajustes2 b i{font-style:normal;font-family:var(--corpo);font-size:12px;width:24px;height:24px;border-radius:50%;background:var(--lime);color:var(--ink);display:grid;place-items:center}
@@ -1072,7 +1043,6 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 .s-imposto .tres-i>div>.ic{color:var(--vinho);width:36px;height:36px;display:block;margin-bottom:6px}
 .s-imposto .promessas b .ic{width:20px;height:20px;margin-right:6px;vertical-align:-3px}
 .s-kv1 .dois-kv b .ic{width:16px;height:16px;margin-right:6px;vertical-align:-3px}
-.s-teo .conceito-box h3 .ic{width:40px;height:40px;display:block;margin-bottom:10px;color:var(--vinho)}
 .s-papeis .lista-p button .ic{width:22px;height:22px;flex:none;color:var(--vinho)}
 .s-papeis .lista-p li.on button .ic{color:var(--lime)}
 .s-papeis .papel-box h3 .ic{width:40px;height:40px;vertical-align:-6px;margin-right:12px;color:var(--vinho)}
@@ -1730,3 +1700,39 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 /* plantas novas: a entrada fica do lado esquerdo */
 .s-planta .planta .entrada.esq{left:0;transform:none}
 .s-planta .planta .entrada.esq::before{content:'←'}
+
+/* ---------- sete ideias sem fotos: trilha de pontos, fio que liga e a ideia em texto grande */
+.s-teo .fio-teo{position:absolute;left:0;top:0;width:1600px;height:900px;pointer-events:none;overflow:visible}
+.s-teo .fio-teo .trilho{fill:none;stroke:var(--creme);stroke-opacity:.5;stroke-width:2;stroke-dasharray:2 7;stroke-linecap:round}
+.s-teo .fio-teo .liga{fill:none;stroke:var(--creme);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
+.s-teo .fio-teo .ponta{fill:var(--creme)}
+.s-teo .fio-teo.troca .liga{animation:liga-teo .8s ease both}
+@keyframes liga-teo{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.s-teo .conceitos{position:absolute;left:72px;top:222px;width:580px;list-style:none}
+.s-teo .conceitos li{height:76px;display:flex;align-items:center;padding-left:var(--dx)}
+.s-teo .conceitos button{display:inline-flex;align-items:center;gap:18px;text-align:left;color:var(--creme)}
+.s-teo .conceitos .no{flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-family:var(--mono);font-size:13px;font-weight:700;background:var(--azul);border:2px solid rgba(255,246,234,.55);color:var(--creme);transition:transform .35s cubic-bezier(.3,1.6,.5,1),background .3s,color .3s,border-color .3s,box-shadow .3s}
+.s-teo .conceitos b{font-family:var(--titulo);font-weight:900;font-size:28px;line-height:1;text-transform:uppercase;opacity:.5;transition:opacity .3s,transform .3s}
+.s-teo .conceitos button:hover b{opacity:.85}
+.s-teo .conceitos li.on .no{background:var(--creme);border-color:var(--creme);color:var(--vinho);transform:scale(1.2);box-shadow:0 0 0 8px rgba(255,246,234,.16)}
+.s-teo .conceitos li.on b{opacity:1;transform:translateX(4px)}
+.s-teo .conceito-box{position:absolute;left:730px;right:72px;top:222px;bottom:176px;display:flex;flex-direction:column;align-items:flex-start;color:var(--creme)}
+.s-teo .conceito-box .ico-t{position:relative;z-index:1;width:104px;height:104px;border-radius:50%;background:var(--creme);color:var(--vinho);display:grid;place-items:center;flex:none}
+.s-teo .conceito-box .ico-t .ic{width:52px;height:52px}
+.s-teo .conceito-box .ico-t::before,.s-teo .conceito-box .ico-t::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid var(--creme);opacity:0;animation:onda-teo 2.8s ease-out infinite}
+.s-teo .conceito-box .ico-t::after{animation-delay:1.4s}
+@keyframes onda-teo{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.75);opacity:0}}
+.s-teo .conceito-box .num-t{position:absolute;right:-6px;top:-52px;font-family:var(--titulo);font-weight:900;font-size:300px;line-height:1;color:transparent;-webkit-text-stroke:2px rgba(255,246,234,.3);pointer-events:none}
+.s-teo .conceito-box h3{position:relative;margin-top:28px;font-family:var(--titulo);font-weight:900;font-size:62px;line-height:.95;text-transform:uppercase;color:var(--creme);max-width:680px}
+.s-teo .conceito-box .au{position:relative;display:flex;gap:8px;align-items:flex-start;margin:14px 0 22px;font-family:var(--mono);font-size:12px;letter-spacing:.04em;line-height:1.5;opacity:.85;max-width:720px}
+.s-teo .conceito-box .au .ic{width:16px;height:16px;flex:none;margin-top:1px}
+.s-teo .conceito-box p{position:relative;font-family:var(--serif);font-size:25px;line-height:1.42;max-width:780px;margin-bottom:24px}
+.s-teo .conceito-box .na{margin-top:auto;display:inline-flex;gap:10px;align-items:center;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--creme);color:var(--cafe);padding:11px 18px;border-radius:999px}
+.s-teo .conceito-box .na .ic{width:18px;height:18px;color:var(--vinho)}
+.s-teo .conceito-box.troca>*{animation:sobe .5s ease both}
+.s-teo .conceito-box.troca h3{animation-delay:.06s}.s-teo .conceito-box.troca .au{animation-delay:.12s}.s-teo .conceito-box.troca p{animation-delay:.18s}.s-teo .conceito-box.troca .na{animation-delay:.24s}
+.s-teo .conceito-box.troca .ico-t{animation:pula-teo .55s cubic-bezier(.3,1.6,.5,1) both}
+.s-teo .conceito-box.troca .num-t{animation:aparece .8s ease both}
+@keyframes pula-teo{from{transform:scale(.4) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
+.pdf .s-teo .fio-teo .liga{animation:none!important}
+.pdf .s-teo .conceito-box .ico-t::before,.pdf .s-teo .conceito-box .ico-t::after{display:none}
