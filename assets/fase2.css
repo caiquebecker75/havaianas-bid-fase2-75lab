@@ -366,7 +366,7 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 .s-crono .leg-c{position:absolute;left:72px;right:72px;bottom:84px;display:flex;gap:22px;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;opacity:.8}
 .s-crono .leg-c i{display:inline-block;width:18px;height:10px;margin-right:6px;vertical-align:middle}
 .leg-c .med{background:var(--lime)}.leg-c .aprov{background:var(--rosa)}.leg-c .est{background:var(--teal-2)}.leg-c .folga{background:repeating-linear-gradient(135deg,rgba(242,241,233,.55) 0 3px,transparent 3px 6px)}.leg-c .par{background:transparent;border:2px solid var(--paper)}
-.pdf .s-crono .abas-c{display:none}
+.pdf .s-crono .abas-c button:not(.on){opacity:.4}
 
 /* ===================================================== riscos do cronograma */
 .s-rcr .datas-r{position:absolute;left:72px;right:72px;top:200px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
@@ -1767,3 +1767,73 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 .s-fim2 .faixa-fim{position:absolute;left:-120px;right:-120px;top:330px;height:220px;overflow:hidden;transform:rotate(-4deg);opacity:.2;pointer-events:none}
 .s-fim2 .faixa-fim .rolo-f{display:flex;gap:12px;width:max-content;height:100%;animation:rola 90s linear infinite}
 .s-fim2 .faixa-fim img{display:block;height:100%;width:auto;flex:none}
+
+/* =====================================================================
+   PDF: telas com botões, abas e animação viram uma página só, com tudo à mostra
+   (vale quando o deck abre com ?pdf=1 e a tela não está sendo fotografada estado por estado)
+   ===================================================================== */
+.pl-pdf,.nota-pl,.teo-pdf,.vir-pdf,.cine-pdf{display:none}
+
+/* agenda: o que cada capítulo tem, que na tela aparece só ao passar o mouse */
+.pdf .s-agx .est small{left:2px;right:2px;font-size:11.5px;opacity:.8!important;translate:0 0!important}
+
+/* plantas: mapa à esquerda e um quadro por ponto, com a foto na loja e a peça sozinha no canto */
+.pdf:not(.estados) .s-planta .vista-pl,.pdf:not(.estados) .s-planta .peca-pl{display:none}
+.pdf:not(.estados) .s-planta .planta{left:72px;right:auto;width:560px;top:196px}
+.pdf:not(.estados) .s-planta .mk.on{background:var(--vinho);transform:scale(1)!important}
+.pdf:not(.estados) .s-planta .nota-pl{display:block;position:absolute;left:72px;top:552px;width:520px;font-size:13.5px;line-height:1.45;opacity:.8}
+.pdf:not(.estados) .s-planta .pl-pdf{display:grid;position:absolute;left:664px;right:72px;top:196px;grid-template-columns:repeat(3,1fr);gap:22px 16px;align-content:start}
+.pl-pdf .cp .im{position:relative;aspect-ratio:16/9;background:var(--paper-3)}
+.pl-pdf .cp .amb{display:block;width:100%;height:100%;object-fit:cover}
+.pl-pdf .cp .pc{position:absolute;right:-6px;bottom:-16px;width:92px;height:69px;object-fit:cover;border:3px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.25);background:#b8b8b6}
+.pl-pdf .cp b{display:flex;gap:8px;align-items:center;margin-top:12px;padding-right:92px;font-family:var(--titulo);font-weight:900;font-size:17px;line-height:1.05;text-transform:uppercase}
+.pl-pdf .cp b i{flex:none;width:24px;height:24px;border-radius:50%;background:var(--vinho);color:var(--creme);display:grid;place-items:center;font-style:normal;font-family:var(--mono);font-size:11px}
+.pl-pdf .cp p{margin-top:7px;font-size:12.5px;line-height:1.42;opacity:.85}
+
+/* sete ideias: as sete numa página, com o ícone, a polaroid e o motivo */
+.pdf:not(.estados) .s-teo .conceitos,.pdf:not(.estados) .s-teo .fio-teo,.pdf:not(.estados) .s-teo .conceito-box,.pdf:not(.estados) .s-teo .miolo>.fonte{display:none}
+.pdf:not(.estados) .s-teo .teo-pdf{display:grid;position:absolute;left:72px;right:72px;top:196px;bottom:92px;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:20px 24px;color:var(--creme)}
+.teo-pdf .tc{display:flex;flex-direction:column;min-height:0;border-top:2px solid rgba(255,246,234,.45);padding-top:12px}
+.teo-pdf .cab{position:relative;display:flex;align-items:center;gap:10px;height:50px}
+.teo-pdf .ico{width:44px;height:44px;border-radius:50%;background:var(--creme);color:var(--vinho);display:grid;place-items:center;flex:none}
+.teo-pdf .ico .ic{width:22px;height:22px}
+.teo-pdf .cab>i{font-style:normal;font-family:var(--mono);font-size:12px;font-weight:700;opacity:.75}
+.teo-pdf .pol{position:absolute;right:2px;top:-2px;margin:0;padding:4px 4px 13px;background:#FBF8F2;transform:rotate(3deg);box-shadow:0 8px 16px rgba(20,30,36,.3)}
+.teo-pdf .pol img{display:block;width:86px;height:64px;object-fit:cover}
+.teo-pdf h3{margin-top:12px;font-family:var(--titulo);font-weight:900;font-size:24px;line-height:1;text-transform:uppercase;color:var(--creme)}
+.teo-pdf .au{margin-top:6px;font-family:var(--mono);font-size:10px;line-height:1.45;opacity:.8}
+.teo-pdf p{margin-top:8px;font-family:var(--serif);font-size:14.5px;line-height:1.4}
+.teo-pdf .na{margin-top:auto;align-self:flex-start;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.06em;line-height:1.3;text-transform:uppercase;background:var(--creme);color:var(--cafe);padding:6px 10px;border-radius:14px}
+.teo-pdf .fim-t{justify-content:flex-end;border-top-color:var(--cafe)}
+.teo-pdf .fim-t b{font-family:var(--titulo);font-weight:900;font-size:42px;line-height:.95;text-transform:uppercase}
+.teo-pdf .fim-t p{font-size:17px;margin-top:12px}
+
+/* virada: as cinco lojas cortadas na linha, Dia das Mães à esquerda e São João à direita */
+.pdf:not(.estados) .s-virx .comp,.pdf:not(.estados) .s-virx .lojas-v{display:none}
+.pdf:not(.estados) .s-virx .vir-pdf{display:grid;position:absolute;left:72px;top:190px;width:1000px;grid-template-columns:repeat(3,1fr);gap:16px 14px}
+.vir-pdf figure{margin:0}
+.vir-pdf .qd{position:relative;aspect-ratio:4/3;overflow:hidden;background:#222}
+.vir-pdf .qd img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vir-pdf .qd .d{position:absolute;inset:0;clip-path:inset(0 0 0 var(--x))}
+.vir-pdf .qd .li{position:absolute;top:0;bottom:0;left:var(--x);width:3px;margin-left:-1.5px;background:var(--lime)}
+.vir-pdf .tg{position:absolute;top:8px;font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 7px;color:#fff}
+.vir-pdf .tg.dm{left:8px;background:#5E8794}.vir-pdf .tg.sj{right:8px;background:#E8340C}
+.vir-pdf figcaption{margin-top:8px;font-family:var(--titulo);font-weight:900;font-size:18px;text-transform:uppercase}
+.vir-pdf .leg-vir{align-self:center;padding:0 10px;border-left:3px solid var(--lime)}
+.vir-pdf .leg-vir b{display:block;font-family:var(--titulo);font-weight:900;font-size:26px;line-height:1;text-transform:uppercase;margin-bottom:10px}
+.vir-pdf .leg-vir p{font-size:14px;line-height:1.45;opacity:.85}
+
+/* galeria da loja própria: as dez fotos com legenda */
+.pdf:not(.estados) .s-cine .cine,.pdf:not(.estados) .s-cine .leg-c,.pdf:not(.estados) .s-cine .tira-c{display:none}
+.pdf:not(.estados) .s-cine .cine-pdf{display:grid;position:absolute;left:72px;right:72px;top:184px;grid-template-columns:repeat(5,1fr);gap:18px 12px}
+.cine-pdf figure{margin:0}
+.cine-pdf img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#222}
+.cine-pdf figcaption{margin-top:8px;font-size:12.5px;line-height:1.35;opacity:.85}
+
+/* central v2: volta para a lista à esquerda, com o texto de cada parte, e as cinco telas à direita */
+.pdf:not(.estados) .s-central.v2 h2{width:560px}
+.pdf:not(.estados) .s-central.v2 .mods{top:322px;left:72px;right:auto;width:540px;flex-direction:column;gap:6px}
+.pdf:not(.estados) .s-central.v2 .mods li{flex:none}
+.pdf:not(.estados) .s-central.v2 .mods li.on{background:#fff;color:inherit;border-color:var(--linha-c)}
+.pdf:not(.estados) .s-central.v2 .mods li.on i{background:var(--teal);color:#fff}
+.pdf:not(.estados) .s-central.v2 .mods li.on p{position:static;width:auto;padding:0 14px 7px 54px;font-family:inherit;font-size:13px;color:inherit}

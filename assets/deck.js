@@ -182,6 +182,17 @@
     }
     lis.forEach((l,k)=>l.querySelector('button').addEventListener('click',e=>{e.stopPropagation();mostra(k);}));
     aoEntrar['s-teo']=()=>mostra(0);mostra(0);
+    if(modoPdf){
+      const tp=document.createElement('div');tp.className='teo-pdf';
+      dados.forEach((d,k)=>{
+        const c=document.createElement('div');c.className='tc';
+        c.innerHTML='<div class="cab"><span class="ico"><svg class="ic"><use href="#i-'+(d.dataset.ic||'olho')+'"/></svg></span><i>'+String(k+1).padStart(2,'0')+'</i>'+(d.dataset.img?'<figure class="pol"><img alt=""></figure>':'')+'</div><h3></h3><span class="au"></span><p></p><span class="na"></span>';
+        if(d.dataset.img)$('.pol img',c).src=d.dataset.img;
+        $('h3',c).textContent=d.dataset.t;$('.au',c).textContent=d.dataset.a;$('p',c).textContent=d.textContent;$('.na',c).textContent='Na loja: '+d.dataset.p;tp.appendChild(c);
+      });
+      const f=document.createElement('div');f.className='tc fim-t';f.innerHTML='<b>Sete ideias,<br>sete decisões.</b><p>Cada peça da campanha nasce de um estudo de marketing ou de varejo.</p>';tp.appendChild(f);
+      (t.querySelector('.miolo')||t).appendChild(tp);
+    }
     if(document.fonts)document.fonts.ready.then(desenha);
     roteiro('s-teo',{itens:()=>lis.map(l=>l.querySelector('button')),texto:k=>dados[k].textContent});
   })();
@@ -224,6 +235,17 @@
         [fig,pc].forEach(el=>{if(!el)return;el.classList.toggle('troca',false);void el.offsetWidth;el.classList.toggle('troca',true);});
       }
       t._mostra=mostra;mostra(0);
+      if(modoPdf){
+        const pp=document.createElement('div');pp.className='pl-pdf';
+        uni.forEach((it,k)=>{
+          const d=document.createElement('div');d.className='cp';
+          d.innerHTML='<div class="im"><img class="amb" alt=""><img class="pc" alt=""></div><b><i></i><span></span></b><p></p>';
+          $('.amb',d).src=it.img;if(it.peca)$('.pc',d).src=it.peca;else $('.pc',d).remove();
+          $('i',d).textContent=k+1;$('span',d).textContent=it.nome;$('p',d).textContent=it.txt;pp.appendChild(d);
+        });
+        const m=t.querySelector('.miolo')||t;m.appendChild(pp);
+        const nota=document.createElement('p');nota.className='nota-pl';nota.textContent='Os números da planta são os mesmos dos quadros: a foto mostra a peça na loja, e o detalhe no canto mostra a peça sozinha.';m.appendChild(nota);
+      }
     });
     aoEntrar['s-planta']=t=>t._mostra&&t._mostra(0);
     roteiro('s-planta',{itens:t=>$$('.lista-pl button',t),texto:(k,t)=>$$('.lista-pl li',t)[k].textContent,extra:800});
@@ -328,6 +350,19 @@
     }
     bs.forEach((b,k)=>b.addEventListener('click',e=>{e.stopPropagation();mostra(k);}));
     aoEntrar['s-virx']=()=>mostra(0);
+    if(modoPdf){
+      const vp=document.createElement('div');vp.className='vir-pdf';
+      bs.forEach(b=>{
+        // o quadro do PDF é 4:3 e corta as laterais da foto 16:9: a linha da virada é recalculada para o recorte
+        const x=Math.max(8,Math.min(92,((+b.dataset.x||50)-12.5)/.75));
+        const f=document.createElement('figure');f.style.setProperty('--x',x+'%');
+        f.innerHTML='<div class="qd"><img class="a" alt=""><div class="d"><img alt=""></div><i class="li"></i><span class="tg dm">Dia das Mães</span><span class="tg sj">São João</span></div><figcaption></figcaption>';
+        $('.a',f).src=b.dataset.dm;$('.d img',f).src=b.dataset.sj;$('figcaption',f).textContent=b.dataset.nome;vp.appendChild(f);
+      });
+      const lg=document.createElement('div');lg.className='leg-vir';
+      lg.innerHTML='<b>Cinco lojas, a mesma câmera.</b><p>Em cada foto, o lado esquerdo é a loja no Dia das Mães, até 9 de maio. O lado direito é a mesma loja no São João, a partir de 10 de maio.</p>';vp.appendChild(lg);
+      (c.closest('.miolo')||c.parentNode).appendChild(vp);
+    }
     roteiro('s-virx',{itens:()=>bs,ms:()=>6500});
   })();
 
@@ -342,6 +377,11 @@
     }
     bs.forEach((b,k)=>b.addEventListener('click',e=>{e.stopPropagation();mostra(k);}));
     aoEntrar['s-cine']=()=>mostra(0);
+    if(modoPdf){
+      const cp=document.createElement('div');cp.className='cine-pdf';
+      bs.forEach(b=>{const f=document.createElement('figure');f.innerHTML='<img alt=""><figcaption></figcaption>';$('img',f).src=$('img',b).src;$('figcaption',f).textContent=b.dataset.leg||'';cp.appendChild(f);});
+      (t.querySelector('.miolo')||t).appendChild(cp);
+    }
     roteiro('s-cine',{itens:()=>bs,ms:()=>5200});
   })();
 
@@ -505,7 +545,8 @@
      O primeiro clique da pessoa dentro da tela para o temporizador até ela sair e voltar. */
   function roteiro(cls,cfg){(autos[cls]=autos[cls]||[]).push(cfg);}
   // PDF: tela com botões vira uma página por botão (fonte/gerar-pdf.mjs chama estas duas)
-  const SO_UMA_PAGINA=['s-papeis','s-cine','s-virx'];
+  // no PDF estas telas viram uma página só, com tudo à mostra (CSS .pdf:not(.estados)); só o cronograma continua com uma página por aba
+  const SO_UMA_PAGINA=['s-planta','s-teo','s-papeis','s-cine','s-virx','s-simu','s-central','s-qr'];
   const cfgPdf=()=>{const t=$('.tela.ativa');return SO_UMA_PAGINA.includes(t.classList[1])?null:[t,(autos[t.classList[1]]||[])[0]];};
   window.__pdfEstados=()=>{const r=cfgPdf();if(!r||!r[1])return 0;const n=r[1].itens(r[0]).length;return n>1?n:0;};
   window.__pdfEstado=k=>{const [t,c]=cfgPdf();c.itens(t)[k].click();};
