@@ -133,14 +133,10 @@
   addEventListener('touchstart',()=>document.body.classList.remove('tem-mouse'),{passive:true});
   $('#verAssim').addEventListener('click',()=>document.body.classList.add('forcar'));
 
-  /* ---------------------------------------------------------- capas de capítulo: trilha e itens levam à tela */
+  /* ---------------------------------------------------------- capas de capítulo: a trilha e os temas só mostram, não levam a lugar nenhum */
   telas.filter(t=>t.classList.contains('s-cap')).forEach(c=>{
-    const n=c.dataset.capitulo,i0=telas.indexOf(c);
-    c.querySelectorAll('.trilha-cap span').forEach(s=>{
-      s.classList.toggle('on',s.dataset.c===n);s.classList.toggle('feito',s.dataset.c<n);s.dataset.cursor='Ir';
-      s.addEventListener('click',e=>{e.stopPropagation();const alvo=telas.findIndex(t=>(t.dataset.cap||'').startsWith('('+s.dataset.c+')'));if(alvo>=0)ir(alvo);});
-    });
-    c.querySelectorAll('.dentro li').forEach((li,k)=>{li.dataset.cursor='Ir';li.addEventListener('click',e=>{e.stopPropagation();ir(i0+1+k);});});
+    const n=c.dataset.capitulo;
+    c.querySelectorAll('.trilha-cap span').forEach(s=>{s.classList.toggle('on',s.dataset.c===n);s.classList.toggle('feito',s.dataset.c<n);});
   });
 
   /* ---------------------------------------------------------- KV: os quatro ajustes */
@@ -158,7 +154,7 @@
   (function(){
     const t=$('.s-teo');if(!t)return;
     const dados=[...$('#conceitosDados').content.querySelectorAll('i')],lis=$$('#conceitos li',t),box=$('#conceitoBox');
-    box.innerHTML='<div class="ico-t"><svg class="ic"><use href="#i-olho"/></svg></div><span class="num-t"></span><h3></h3><span class="au"><svg class="ic p"><use href="#i-livro"/></svg><span></span></span><p></p><span class="na"><svg class="ic p"><use href="#i-pin"/></svg><span></span></span>';
+    box.innerHTML='<div class="ico-t"><svg class="ic"><use href="#i-olho"/></svg></div><span class="num-t"></span><h3></h3><span class="au"><svg class="ic p"><use href="#i-livro"/></svg><span></span></span><p></p><span class="na"><svg class="ic p"><use href="#i-pin"/></svg><span></span></span><figure class="pola"><img alt="" data-cursor="Ampliar"></figure>';
     const svg=$('.fio-teo',t),trilho=$('.trilho',svg),liga=$('.liga',svg),ponta=$('.ponta',svg);
     const rel=el=>{let x=0,y=0,e=el;while(e&&e!==t){x+=e.offsetLeft;y+=e.offsetTop;e=e.offsetParent;}return {x,y,w:el.offsetWidth,h:el.offsetHeight};};
     let atual=0;
@@ -180,6 +176,7 @@
       $('.ico-t use',box).setAttribute('href','#i-'+(d.dataset.ic||'olho'));
       $('.num-t',box).textContent=String(k+1).padStart(2,'0');
       $('h3',box).textContent=d.dataset.t;$('.au span',box).textContent=d.dataset.a;$('p',box).textContent=d.textContent;$('.na span',box).textContent='Na loja: '+d.dataset.p;
+      const po=$('.pola img',box);po.src=d.dataset.img||'';po.dataset.amplia=d.dataset.img||'';po.dataset.legenda=d.dataset.t;$('.pola',box).hidden=!d.dataset.img;
       desenha();
       [box,svg].forEach(el=>{el.classList.toggle('troca',false);void el.getBoundingClientRect();el.classList.toggle('troca',true);});
     }
@@ -209,13 +206,22 @@
         m.style.transitionDelay=(.5+j*.12)+'s';m.setAttribute('aria-label',it.nome);
         m.addEventListener('click',e=>{e.stopPropagation();mostra(k);});planta.appendChild(m);return m;
       });
-      fig.innerHTML='<img alt=""><figcaption><b></b><p></p></figcaption>';
+      fig.innerHTML='<img alt=""><figcaption><i></i><div><b></b><p></p></div></figcaption>';
+      const pc=$('.peca-pl',t),pim=pc?document.createElement('img'):null;
+      if(pc){
+        pc.innerHTML='<figcaption><i>A peça</i><b></b></figcaption>';pc.prepend(pim);pim.alt='';
+        // o fundo do quadro pega o cinza da própria imagem, pra peça não ficar com faixa de outra cor
+        pim.addEventListener('load',()=>{try{const cv=document.createElement('canvas'),w=pim.naturalWidth,hh=pim.naturalHeight;cv.width=2;cv.height=1;const x=cv.getContext('2d');
+          x.drawImage(pim,0,hh*.5,3,3,0,0,1,1);x.drawImage(pim,w-3,hh*.5,3,3,1,0,1,1);const d=x.getImageData(0,0,2,1).data;
+          pc.style.backgroundColor='rgb('+((d[0]+d[4])>>1)+','+((d[1]+d[5])>>1)+','+((d[2]+d[6])>>1)+')';}catch(er){}});
+      }
       function mostra(k){
         const it=uni[k];if(!it)return;
         $$('li',ol).forEach((l,j)=>l.classList.toggle('on',j===k));mks.forEach(m=>m.classList.toggle('on',+m.dataset.k===k));
         const im=$('img',fig);im.src=it.img;im.alt=it.nome;im.dataset.amplia=it.img;im.dataset.legenda=it.nome;im.dataset.cursor='Ampliar';
-        $('b',fig).textContent=it.nome;$('p',fig).textContent=it.txt;
-        fig.classList.remove('troca');void fig.offsetWidth;fig.classList.add('troca');
+        $('i',fig).textContent=k+1;$('b',fig).textContent=it.nome;$('p',fig).textContent=it.txt;
+        if(pc){pc.hidden=!it.peca;pim.src=it.peca||'';pim.dataset.amplia=it.peca||'';pim.dataset.legenda=it.nome+' · a peça';pim.dataset.cursor='Ampliar';$('b',pc).textContent=it.nome;}
+        [fig,pc].forEach(el=>{if(!el)return;el.classList.toggle('troca',false);void el.offsetWidth;el.classList.toggle('troca',true);});
       }
       t._mostra=mostra;mostra(0);
     });
@@ -499,7 +505,7 @@
      O primeiro clique da pessoa dentro da tela para o temporizador até ela sair e voltar. */
   function roteiro(cls,cfg){(autos[cls]=autos[cls]||[]).push(cfg);}
   // PDF: tela com botões vira uma página por botão (fonte/gerar-pdf.mjs chama estas duas)
-  const SO_UMA_PAGINA=['s-planta','s-papeis','s-cine','s-virx'];
+  const SO_UMA_PAGINA=['s-papeis','s-cine','s-virx'];
   const cfgPdf=()=>{const t=$('.tela.ativa');return SO_UMA_PAGINA.includes(t.classList[1])?null:[t,(autos[t.classList[1]]||[])[0]];};
   window.__pdfEstados=()=>{const r=cfgPdf();if(!r||!r[1])return 0;const n=r[1].itens(r[0]).length;return n>1?n:0;};
   window.__pdfEstado=k=>{const [t,c]=cfgPdf();c.itens(t)[k].click();};

@@ -249,40 +249,12 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 .s-jorn .nota-j{position:absolute;left:72px;right:72px;top:640px;font-family:var(--serif);font-style:italic;font-size:24px;line-height:1.4;color:var(--rosa);border-top:2px solid var(--linha-e);padding-top:18px}
 
 /* ===================================================== plantas */
-.s-planta>.miolo>.eyebrow{position:absolute;left:72px;top:92px}
-.s-planta h2{position:absolute;left:72px;top:122px;width:500px;font-size:44px}
-.s-planta .planta{position:absolute;left:600px;top:84px;height:756px;background:#fff;box-shadow:0 18px 40px rgba(0,0,0,.16)}
-.s-planta .planta img{display:block;height:100%;width:auto}
-.s-planta .planta .entrada{position:absolute;left:50%;bottom:-30px;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:8px}
-.s-planta .planta .entrada::before{content:'↑';font-size:16px}
 .mk{position:absolute;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;background:var(--vinho);color:var(--creme);display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:14px;box-shadow:0 0 0 3px var(--creme),0 6px 14px rgba(0,0,0,.35);cursor:pointer;transform:scale(0);transition:transform .45s cubic-bezier(.3,1.6,.5,1),background .25s}
 .s-planta.ativa .mk{transform:scale(1)}
 .mk::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:3px solid var(--vinho);opacity:0}
 .mk.on{background:var(--ink);transform:scale(1.25)!important;z-index:3}
 .mk.on::after{border-color:var(--ink);animation:pulsa-hs 1.8s ease-out infinite}
-.s-planta .lista-pl{position:absolute;left:72px;top:300px;width:490px;list-style:none;counter-reset:pl}
-.s-planta .lista-pl li{border-top:2px solid var(--linha-c)}
-.s-planta .lista-pl li:last-child{border-bottom:2px solid var(--linha-c)}
-.s-planta .lista-pl button{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:11px 8px;font-size:17px;font-weight:600;transition:background .25s,padding .25s}
-.s-planta .lista-pl button i{font-style:normal;width:30px;height:30px;border-radius:50%;background:var(--paper-3);display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:700;flex:none}
-.s-planta .lista-pl li.on button{background:var(--azul);color:var(--creme);padding-left:14px}
-.s-planta .lista-pl li.on button i{background:var(--vinho);color:var(--creme)}
-.s-planta .vista-pl{position:absolute;left:1100px;right:72px;top:84px}
-.s-planta .vista-pl img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:var(--paper-3);cursor:zoom-in}
-.s-planta .vista-pl figcaption{padding-top:16px}
-.s-planta .vista-pl figcaption b{display:block;font-family:var(--titulo);font-weight:900;font-size:30px;text-transform:uppercase;line-height:1;margin-bottom:10px}
-.s-planta .vista-pl figcaption p{font-size:15.5px;line-height:1.5}
-.s-planta .vista-pl.troca img,.s-planta .vista-pl.troca figcaption{animation:aparece .5s ease both}
 /* planta deitada (hipermercado e corredor) */
-.s-planta.deitada h2{width:900px}
-.s-planta.deitada .planta{left:72px;top:210px;height:auto;width:960px}
-.s-planta.deitada .planta img{width:100%;height:auto}
-.s-planta.deitada .lista-pl{left:1080px;right:72px;width:auto;top:520px}
-.s-planta.deitada .lista-pl button{padding:7px 8px;font-size:15px}
-.s-planta.deitada .lista-pl button i{width:26px;height:26px}
-.s-planta.deitada .vista-pl{left:1080px;top:84px}
-.s-planta.deitada .vista-pl figcaption p{font-size:14px}
-.s-planta.deitada .vista-pl figcaption b{font-size:24px;margin-bottom:6px}
 
 /* ===================================================== galerias */
 .s-gal h2{font-size:48px}
@@ -446,11 +418,6 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 .pdf .mk.on{transform:scale(1.25)!important}
 .pdf .s-hist .bg,.pdf .s-cap .foto-cap{transform:none!important}
 .pdf .hs::after,.pdf .mk::after{display:none}
-.s-planta .lista-pl li p{display:none}
-.pdf .s-planta .lista-pl li p{display:block;font-size:12.5px;line-height:1.4;padding:0 8px 8px 52px;opacity:.85}
-.pdf .s-planta .vista-pl figcaption p{display:none}
-.pdf .s-planta.deitada .vista-pl{display:none}
-.pdf .s-planta.deitada .lista-pl{top:84px}
 
 /* ===================================================== capítulo 10: o time e como a gente cobra */
 .s-time h2,.s-papeis h2,.s-frentes h2,.s-cobra h2,.s-imposto h2,.s-fora h2{position:absolute;left:72px;top:96px;width:1400px;font-size:52px}
@@ -1698,8 +1665,6 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 .s-virx .abrir-sj{position:absolute;left:1120px;top:762px}
 
 /* plantas novas: a entrada fica do lado esquerdo */
-.s-planta .planta .entrada.esq{left:0;transform:none}
-.s-planta .planta .entrada.esq::before{content:'←'}
 
 /* ---------- sete ideias sem fotos: trilha de pontos, fio que liga e a ideia em texto grande */
 .s-teo .fio-teo{position:absolute;left:0;top:0;width:1600px;height:900px;pointer-events:none;overflow:visible}
@@ -1736,3 +1701,69 @@ h1 em,h2 em,h3 em,.l em{font-family:var(--serif);font-style:italic;font-weight:4
 @keyframes pula-teo{from{transform:scale(.4) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
 .pdf .s-teo .fio-teo .liga{animation:none!important}
 .pdf .s-teo .conceito-box .ico-t::before,.pdf .s-teo .conceito-box .ico-t::after{display:none}
+
+/* ---------- capas: a trilha e os temas só mostram, sem clique */
+.s-cap .dentro li,.s-cap .trilha-cap span{pointer-events:none;cursor:default}
+
+/* ---------- slide 10: o asterisco do trade online */
+.s-numx sup.ast{font-size:.55em;color:var(--lime);margin-left:2px;vertical-align:super;line-height:0}
+.s-numx .n5>div{position:relative}
+.s-numx .n5 .ast-nota{position:absolute;left:0;top:calc(100% + 4px);width:470px;max-width:none!important;font-size:12.5px!important;line-height:1.4;color:var(--lime);opacity:1!important}
+
+/* ---------- slide 19: só o KV com o pé */
+.s-kv5 .kv-pe{position:absolute;left:72px;top:184px;width:900px;margin:0;box-shadow:0 40px 90px rgba(0,0,0,.5)}
+.s-kv5 .kv-pe img{display:block;width:100%;height:auto;cursor:zoom-in}
+
+/* ---------- plantas: foto da loja grande, mapa pequeno e a peça sozinha no cinza */
+.s-planta>.miolo>.eyebrow{position:absolute;left:72px;top:92px}
+.s-planta h2{position:absolute;left:72px;top:122px;width:1000px;font-size:44px}
+.s-planta .vista-pl{position:absolute;left:72px;top:196px;width:900px;margin:0}
+.s-planta .vista-pl img{display:block;width:900px;height:506px;object-fit:cover;background:var(--paper-3);box-shadow:0 18px 40px rgba(0,0,0,.18);cursor:zoom-in}
+.s-planta .vista-pl figcaption{display:flex;gap:14px;align-items:flex-start;padding-top:16px}
+.s-planta .vista-pl figcaption i{flex:none;width:34px;height:34px;border-radius:50%;background:var(--vinho);color:var(--creme);display:grid;place-items:center;font-style:normal;font-family:var(--mono);font-weight:700;font-size:14px}
+.s-planta .vista-pl figcaption b{display:block;font-family:var(--titulo);font-weight:900;font-size:28px;text-transform:uppercase;line-height:1;margin:4px 0 6px}
+.s-planta .vista-pl figcaption p{font-size:15.5px;line-height:1.45;max-width:840px}
+.s-planta .planta{position:absolute;left:1000px;right:72px;top:196px;background:#fff;box-shadow:0 12px 30px rgba(0,0,0,.14)}
+.s-planta .planta img{display:block;width:100%;height:auto}
+.s-planta .planta .entrada{position:absolute;left:0;bottom:-22px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.s-planta .planta .entrada::before{content:'←';font-size:13px}
+.s-planta .planta .mk{width:24px;height:24px;margin:-12px 0 0 -12px;font-size:11px;box-shadow:0 0 0 2px var(--creme),0 3px 8px rgba(0,0,0,.3)}
+.s-planta .planta .mk::after{inset:-2px;border-width:2px}
+.s-planta .peca-pl{position:absolute;left:1000px;right:72px;top:524px;height:276px;margin:0;background:#b8b8b6;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.14)}
+.s-planta .peca-pl[hidden]{display:none}
+.s-planta .peca-pl img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;cursor:zoom-in}
+.s-planta .peca-pl figcaption{position:absolute;left:12px;top:12px;display:flex;gap:6px;pointer-events:none}
+.s-planta .peca-pl figcaption i,.s-planta .peca-pl figcaption b{font-style:normal;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 8px;line-height:1.2}
+.s-planta .peca-pl figcaption i{background:var(--ink);color:var(--paper)}
+.s-planta .peca-pl figcaption b{background:var(--paper);color:var(--ink)}
+.s-planta .lista-pl{display:none}
+.s-planta .vista-pl.troca img,.s-planta .vista-pl.troca figcaption,.s-planta .peca-pl.troca img{animation:aparece .5s ease both}
+
+/* ---------- galerias do varejo: a chinelaria tem quatro peças */
+.s-gal .pecas-tira.t4{grid-template-columns:120px repeat(4,1fr)}
+
+/* ---------- todas as peças do varejo, paradas */
+.s-todas h2{position:absolute;left:72px;top:96px;width:1456px;font-size:50px}
+.s-todas .todas{position:absolute;left:72px;right:72px;top:196px;bottom:104px;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:1fr 1fr;gap:16px 14px}
+.s-todas .tp{display:flex;flex-direction:column;min-height:0;padding:0;text-align:left;color:inherit;background:none}
+.s-todas .tp .fu{flex:1;min-height:0;display:block;overflow:hidden;background:#b6b6b4}
+.s-todas .tp .fu img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.s-todas .tp:hover .fu img{transform:scale(1.05)}
+.s-todas .tp b{margin-top:10px;font-family:var(--titulo);font-weight:900;font-size:21px;line-height:1;text-transform:uppercase}
+.s-todas .tp-txt{display:flex;flex-direction:column;justify-content:flex-end;padding:0 6px 4px;border-top:4px solid var(--lime)}
+.s-todas .tp-txt .eyebrow{color:var(--lime);margin-bottom:10px}
+.s-todas .tp-txt p{font-family:var(--titulo);font-weight:900;font-size:26px;line-height:1.05;text-transform:uppercase}
+.s-todas .tp small{margin-top:4px;font-size:12.5px;line-height:1.35;opacity:.72}
+
+/* ---------- sete ideias: a foto volta pequena, como polaroid */
+.s-teo .conceito-box p{max-width:540px;font-size:23px}
+.s-teo .conceito-box .pola{position:absolute;right:6px;top:262px;width:236px;margin:0;padding:10px 10px 40px;background:#FBF8F2;box-shadow:0 18px 36px rgba(20,30,36,.35);transform:rotate(4deg)}
+.s-teo .conceito-box .pola[hidden]{display:none}
+.s-teo .conceito-box .pola img{display:block;width:216px;height:162px;object-fit:cover;cursor:zoom-in}
+.s-teo .conceito-box.troca .pola{animation:pola-cai .6s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes pola-cai{from{opacity:0;transform:rotate(-6deg) translateY(-24px) scale(.92)}to{opacity:1;transform:rotate(4deg)}}
+
+/* ---------- último slide: faixa de peças passando no fundo */
+.s-fim2 .faixa-fim{position:absolute;left:-120px;right:-120px;top:330px;height:220px;overflow:hidden;transform:rotate(-4deg);opacity:.2;pointer-events:none}
+.s-fim2 .faixa-fim .rolo-f{display:flex;gap:12px;width:max-content;height:100%;animation:rola 90s linear infinite}
+.s-fim2 .faixa-fim img{display:block;height:100%;width:auto;flex:none}
